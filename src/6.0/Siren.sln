@@ -8,6 +8,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Siren.Infrastructure.Mermai
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Siren.Tests.Unit", "Siren.Tests.Unit\Siren.Tests.Unit.csproj", "{F92FF1EE-6379-429E-9467-39A160EB2805}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Siren.Sample.Host", "Siren.Sample.Host\Siren.Sample.Host.csproj", "{9EB4A008-433E-449F-82D2-C196507FA412}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -30,5 +32,9 @@ Global
 		{F92FF1EE-6379-429E-9467-39A160EB2805}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F92FF1EE-6379-429E-9467-39A160EB2805}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F92FF1EE-6379-429E-9467-39A160EB2805}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9EB4A008-433E-449F-82D2-C196507FA412}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9EB4A008-433E-449F-82D2-C196507FA412}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9EB4A008-433E-449F-82D2-C196507FA412}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9EB4A008-433E-449F-82D2-C196507FA412}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
