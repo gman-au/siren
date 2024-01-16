@@ -33,10 +33,21 @@ namespace Siren.Infrastructure.Poco
 				
 				foreach (var declaredProperty in poco.GetProperties(BindingFlags.Instance | BindingFlags.Public))
 				{
+					var propertyType = declaredProperty.PropertyType;
+					var propertyTypeName = declaredProperty.PropertyType.Name;
+					
+					// Is it nullable type? 
+					if (Nullable.GetUnderlyingType(propertyType) != null)
+					{
+						// It's nullable
+						propertyType = Nullable.GetUnderlyingType(propertyType);
+						propertyTypeName = $"{propertyType.Name}";
+					}
+					
 					var property = new Property
 					{
 						Name = declaredProperty.Name,
-						Type = declaredProperty.PropertyType.Name,
+						Type = propertyTypeName,
 						IsPrimaryKey = ContainsAttribute<KeyAttribute>(declaredProperty),
 						IsForeignKey = ContainsAttribute<ForeignKeyAttribute>(declaredProperty),
 						IsUniqueKey = false
@@ -79,7 +90,7 @@ namespace Siren.Infrastructure.Poco
 								Source = source,
 								Target = target,
 								SourceCardinality = CardinalityTypeEnum.ExactlyOne,
-								TargetCardinality = CardinalityTypeEnum.ExactlyOne
+								TargetCardinality = CardinalityTypeEnum.OneOrMore
 							};
 							
 							relationships
