@@ -15,21 +15,23 @@ namespace Siren.Infrastructure.Poco
 		public async Task<Universe> PerformAsync(Assembly assembly)
 		{
 			var entities = new List<Entity>();
-			
+
 			var pocos =
 				assembly
 					.GetExportedTypes()
 					.Where(
 						o =>
 							o.IsClass
-					);
+					)
+					.ToList();
 
+			// Map entities
 			foreach (var poco in pocos)
 			{
 				var name = poco.Name;
 				var properties = new List<Property>();
 				
-				foreach (var declaredProperty in poco.GetProperties())
+				foreach (var declaredProperty in poco.GetProperties(BindingFlags.Instance | BindingFlags.Public))
 				{
 					var property = new Property
 					{
@@ -40,7 +42,11 @@ namespace Siren.Infrastructure.Poco
 						IsUniqueKey = false
 					};
 
-					properties.Add(property);
+					if (!IsVirtual(declaredProperty))
+					{
+						properties
+							.Add(property);
+					}
 				}
 
 				var entity =
@@ -50,48 +56,46 @@ namespace Siren.Infrastructure.Poco
 						Properties = properties
 					};
 				
-				entities.Add(entity);
+				entities
+					.Add(entity);
 			}
 			
 			var relationships = new List<Relationship>();
 
-			// var customerEntity = new Entity
-			// {
-			// 	Name = "CUSTOMER",
-			// 	Properties = new List<Property>
-			// 	{
-			// 		new() { Name = "CustomerId", Type = "Guid", IsPrimaryKey = true },
-			// 		new() { Name = "FirstName", Type = "string" },
-			// 		new() { Name = "LastName", Type = "string" },
-			// 	}
-			// };
-			//
-			// var orderEntity = new Entity
-			// {
-			// 	Name = "ORDER",
-			// 	Properties = new List<Property>
-			// 	{
-			// 		new() { Name = "OrderId", Type = "Guid", IsPrimaryKey = true, IsUniqueKey = true },
-			// 		new() { Name = "CustomerId", Type = "Guid", IsForeignKey = true },
-			// 		new() { Name = "ReferenceNumber", Type = "long" },
-			// 		new() { Name = "DatePlaced", Type = "datetime" },
-			// 	}
-			// };
-			//
-			// entities.Add(customerEntity);
-			// entities.Add(orderEntity);
-			//
-			// relationships.Add(
-			// 	new Relationship
-			// 	{
-			// 		Source = customerEntity,
-			// 		Target = orderEntity,
-			// 		SourceCardinality = CardinalityTypeEnum.ExactlyOne,
-			// 		TargetCardinality = CardinalityTypeEnum.OneOrMore
-			// 	}
-			// );
+			// Map relationships
+			foreach (var poco in pocos)
+			{
+				foreach (var declaredProperty in poco.GetProperties(BindingFlags.Instance | BindingFlags.Public))
+				{
+					if (IsVirtual(declaredProperty))
+					{
+						var source = entities.FirstOrDefault(o => o.Name == declaredProperty.PropertyType.Name);
+						var target = entities.FirstOrDefault(o => o.Name == poco.Name);
 
-			var result = new Universe { Entities = entities, Relationships = relationships };
+						if (source != null && target != null)
+						{
+							var relationship = new Relationship
+							{
+								Source = source,
+								Target = target,
+								SourceCardinality = CardinalityTypeEnum.ExactlyOne,
+								TargetCardinality = CardinalityTypeEnum.ExactlyOne
+							};
+							
+							relationships
+								.Add(relationship);
+						}
+					}
+				}
+			}
+
+			var result = 
+				new Universe
+				{
+					Entities = entities, 
+					Relationships = relationships
+				};
+			
 			return result;
 		}
 
@@ -106,6 +110,19 @@ namespace Siren.Infrastructure.Poco
 					.Any(o => o.AttributeType == typeof(T));
 			
 			return exists;
+		}
+		
+		private static bool IsVirtual(PropertyInfo propertyInfo)
+		{
+			if (!propertyInfo.CanRead)
+			{
+				return false;
+			}
+
+			return
+				propertyInfo?
+					.GetGetMethod(true)?
+					.IsVirtual ?? false;
 		}
 	}
 }
