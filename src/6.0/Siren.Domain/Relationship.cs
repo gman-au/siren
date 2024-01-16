@@ -2,12 +2,12 @@
 {
 	public class Relationship
 	{
-		public Entity Source { get; set; }
+		public Entity Source { get; init; }
 		
-		public Entity Target { get; set; }
+		public Entity Target { get; init; }
 		
-		public CardinalityTypeEnum SourceCardinality { get; set; }
+		public CardinalityTypeEnum SourceCardinality { get; init; }
 		
-		public CardinalityTypeEnum TargetCardinality { get; set; }
+		public CardinalityTypeEnum TargetCardinality { get; init; }
 	}
 }

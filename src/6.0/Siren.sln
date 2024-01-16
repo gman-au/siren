@@ -10,6 +10,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Siren.Tests.Unit", "Siren.T
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Siren.Sample.Host", "Siren.Sample.Host\Siren.Sample.Host.csproj", "{9EB4A008-433E-449F-82D2-C196507FA412}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Siren.Infrastructure.Poco", "Siren.Infrastructure.Poco\Siren.Infrastructure.Poco.csproj", "{61945366-55C9-47A3-833D-6995C9983717}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Siren.Tests.Domain", "Siren.Tests.Domain\Siren.Tests.Domain.csproj", "{945DFE5E-6ECA-493E-80EE-1690234E1D90}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -36,5 +40,13 @@ Global
 		{9EB4A008-433E-449F-82D2-C196507FA412}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9EB4A008-433E-449F-82D2-C196507FA412}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9EB4A008-433E-449F-82D2-C196507FA412}.Release|Any CPU.Build.0 = Release|Any CPU
+		{61945366-55C9-47A3-833D-6995C9983717}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{61945366-55C9-47A3-833D-6995C9983717}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{61945366-55C9-47A3-833D-6995C9983717}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{61945366-55C9-47A3-833D-6995C9983717}.Release|Any CPU.Build.0 = Release|Any CPU
+		{945DFE5E-6ECA-493E-80EE-1690234E1D90}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{945DFE5E-6ECA-493E-80EE-1690234E1D90}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{945DFE5E-6ECA-493E-80EE-1690234E1D90}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{945DFE5E-6ECA-493E-80EE-1690234E1D90}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

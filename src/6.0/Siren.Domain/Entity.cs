@@ -4,8 +4,8 @@ namespace Siren.Domain
 {
 	public class Entity
 	{
-		public string Name { get; set; }
+		public string Name { get; init; }
 
-		public IEnumerable<Property> Properties { get; set; }
+		public IEnumerable<Property> Properties { get; init; }
 	}
 }

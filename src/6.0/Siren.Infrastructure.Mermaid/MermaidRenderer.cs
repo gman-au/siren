@@ -26,12 +26,12 @@ namespace Siren.Infrastructure.Mermaid
 			{
 				// Entity header
 				result
-					.AppendLine($"{entity.Name} {{");
+					.AppendLine($"\t{entity.Name} {{");
 
 				foreach (var property in entity.Properties)
 				{
 					result
-						.Append($"\t{property.Type} {property.Name} ");
+						.Append($"\t\t{property.Type} {property.Name} ");
 
 					var keys = new List<string>();
 					if (property.IsPrimaryKey)
@@ -56,7 +56,7 @@ namespace Siren.Infrastructure.Mermaid
 
 				// Entity footer
 				result
-					.AppendLine("}");
+					.AppendLine("\t}");
 			}
 
 			foreach (var relationship in universe.Relationships)

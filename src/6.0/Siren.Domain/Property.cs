@@ -2,14 +2,14 @@
 {
 	public class Property
 	{
-		public string Name { get; set; }
+		public string Name { get; init; }
 
-		public string Type { get; set; }
+		public string Type { get; init; }
 		
-		public bool IsPrimaryKey { get; set; }
+		public bool IsPrimaryKey { get; init; }
 		
-		public bool IsForeignKey { get; set; }
+		public bool IsForeignKey { get; init; }
 		
-		public bool IsUniqueKey { get; set; }
+		public bool IsUniqueKey { get; init; }
 	}
 }
