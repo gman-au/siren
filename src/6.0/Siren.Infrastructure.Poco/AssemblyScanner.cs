@@ -41,7 +41,7 @@ namespace Siren.Infrastructure.Poco
 					{
 						// It's nullable
 						propertyType = Nullable.GetUnderlyingType(propertyType);
-						propertyTypeName = $"{propertyType.Name}";
+						propertyTypeName = $"{propertyType?.Name}";
 					}
 					
 					var property = new Property

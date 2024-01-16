@@ -1,0 +1,15 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <OutputType>Exe</OutputType>
+        <PackAsTool>true</PackAsTool>
+        <ToolCommandName>htmlpackager</ToolCommandName>
+        <TargetFramework>net6.0</TargetFramework>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\Siren.Infrastructure.Mermaid\Siren.Infrastructure.Mermaid.csproj" />
+      <ProjectReference Include="..\Siren.Infrastructure.Poco\Siren.Infrastructure.Poco.csproj" />
+    </ItemGroup>
+
+</Project>
