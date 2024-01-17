@@ -4,15 +4,13 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Reflection;
-using System.Threading.Tasks;
 using Siren.Domain;
-using Siren.Interfaces;
 
 namespace Siren.Infrastructure.Poco
 {
-	public class AssemblyScanner : IAssemblyScanner
+	public static class AssemblyScanner
 	{
-		public async Task<Universe> PerformAsync(Assembly assembly)
+		public static Universe Perform(Assembly assembly)
 		{
 			var entities = new List<Entity>();
 
@@ -30,12 +28,12 @@ namespace Siren.Infrastructure.Poco
 			{
 				var name = poco.Name;
 				var properties = new List<Property>();
-				
+
 				foreach (var declaredProperty in poco.GetProperties(BindingFlags.Instance | BindingFlags.Public))
 				{
 					var propertyType = declaredProperty.PropertyType;
 					var propertyTypeName = declaredProperty.PropertyType.Name;
-					
+
 					// Is it nullable type? 
 					if (Nullable.GetUnderlyingType(propertyType) != null)
 					{
@@ -43,7 +41,7 @@ namespace Siren.Infrastructure.Poco
 						propertyType = Nullable.GetUnderlyingType(propertyType);
 						propertyTypeName = $"{propertyType?.Name}";
 					}
-					
+
 					var property = new Property
 					{
 						Name = declaredProperty.Name,
@@ -66,11 +64,11 @@ namespace Siren.Infrastructure.Poco
 						Name = name,
 						Properties = properties
 					};
-				
+
 				entities
 					.Add(entity);
 			}
-			
+
 			var relationships = new List<Relationship>();
 
 			// Map relationships
@@ -92,7 +90,7 @@ namespace Siren.Infrastructure.Poco
 								SourceCardinality = CardinalityTypeEnum.ExactlyOne,
 								TargetCardinality = CardinalityTypeEnum.OneOrMore
 							};
-							
+
 							relationships
 								.Add(relationship);
 						}
@@ -100,29 +98,29 @@ namespace Siren.Infrastructure.Poco
 				}
 			}
 
-			var result = 
+			var result =
 				new Universe
 				{
-					Entities = entities, 
+					Entities = entities,
 					Relationships = relationships
 				};
-			
+
 			return result;
 		}
 
 		private static bool ContainsAttribute<T>(MemberInfo property) where T : Attribute
 		{
-			var customAttributes = 
+			var customAttributes =
 				property
 					.CustomAttributes;
 
 			var exists =
 				customAttributes
 					.Any(o => o.AttributeType == typeof(T));
-			
+
 			return exists;
 		}
-		
+
 		private static bool IsVirtual(PropertyInfo propertyInfo)
 		{
 			if (!propertyInfo.CanRead)

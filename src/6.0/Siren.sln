@@ -2,13 +2,9 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Siren.Domain", "Siren.Domain\Siren.Domain.csproj", "{320D89FF-0A57-4B83-8C92-A55A6FCD22C4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Siren.Interfaces", "Siren.Interfaces\Siren.Interfaces.csproj", "{16EBF5AE-B1A2-424F-9D1E-15616F52C293}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Siren.Infrastructure.Mermaid", "Siren.Infrastructure.Mermaid\Siren.Infrastructure.Mermaid.csproj", "{8EAC3B7B-4F18-4418-9855-9A989C2C2D12}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Siren.Tests.Unit", "Siren.Tests.Unit\Siren.Tests.Unit.csproj", "{F92FF1EE-6379-429E-9467-39A160EB2805}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Siren.Sample.Host", "Siren.Sample.Host\Siren.Sample.Host.csproj", "{9EB4A008-433E-449F-82D2-C196507FA412}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Siren.Infrastructure.Poco", "Siren.Infrastructure.Poco\Siren.Infrastructure.Poco.csproj", "{61945366-55C9-47A3-833D-6995C9983717}"
 EndProject
@@ -26,10 +22,6 @@ Global
 		{320D89FF-0A57-4B83-8C92-A55A6FCD22C4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{320D89FF-0A57-4B83-8C92-A55A6FCD22C4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{320D89FF-0A57-4B83-8C92-A55A6FCD22C4}.Release|Any CPU.Build.0 = Release|Any CPU
-		{16EBF5AE-B1A2-424F-9D1E-15616F52C293}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{16EBF5AE-B1A2-424F-9D1E-15616F52C293}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{16EBF5AE-B1A2-424F-9D1E-15616F52C293}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{16EBF5AE-B1A2-424F-9D1E-15616F52C293}.Release|Any CPU.Build.0 = Release|Any CPU
 		{8EAC3B7B-4F18-4418-9855-9A989C2C2D12}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{8EAC3B7B-4F18-4418-9855-9A989C2C2D12}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8EAC3B7B-4F18-4418-9855-9A989C2C2D12}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -38,10 +30,6 @@ Global
 		{F92FF1EE-6379-429E-9467-39A160EB2805}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F92FF1EE-6379-429E-9467-39A160EB2805}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F92FF1EE-6379-429E-9467-39A160EB2805}.Release|Any CPU.Build.0 = Release|Any CPU
-		{9EB4A008-433E-449F-82D2-C196507FA412}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{9EB4A008-433E-449F-82D2-C196507FA412}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{9EB4A008-433E-449F-82D2-C196507FA412}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{9EB4A008-433E-449F-82D2-C196507FA412}.Release|Any CPU.Build.0 = Release|Any CPU
 		{61945366-55C9-47A3-833D-6995C9983717}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{61945366-55C9-47A3-833D-6995C9983717}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{61945366-55C9-47A3-833D-6995C9983717}.Release|Any CPU.ActiveCfg = Release|Any CPU

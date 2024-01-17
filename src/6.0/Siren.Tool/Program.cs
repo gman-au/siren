@@ -1,12 +1,11 @@
-﻿// See https://aka.ms/new-console-template for more information
-
-using System;
+﻿using System;
 using System.IO;
 using System.Reflection;
 using Siren.Infrastructure.Mermaid;
 using Siren.Infrastructure.Poco;
 
-Console.WriteLine("Hello, World!");
+Console
+	.WriteLine("Starting Siren console...");
 
 if (args.Length < 2)
 	throw new Exception("Expected 2 arguments");
@@ -34,18 +33,12 @@ catch (FileNotFoundException)
 }
 
 var universe =
-	await
-		new AssemblyScanner()
-			.PerformAsync(assembly);
+	AssemblyScanner
+		.Perform(assembly);
 
 var result =
-	await
-		new MermaidRenderer()
-			.RenderAsync(universe);
-
-var path =
-	Environment
-		.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+	MermaidRenderer
+		.Perform(universe);
 
 File
 	.WriteAllText(

@@ -2,15 +2,13 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using Siren.Domain;
-using Siren.Interfaces;
 
 namespace Siren.Infrastructure.Mermaid
 {
-	public class MermaidRenderer : IDiagramRenderer
+	public static class MermaidRenderer
 	{
-		public async Task<StringBuilder> RenderAsync(Universe universe)
+		public static StringBuilder Perform(Universe universe)
 		{
 			var result = new StringBuilder();
 

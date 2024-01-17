@@ -8,8 +8,8 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\Siren.Infrastructure.Mermaid\Siren.Infrastructure.Mermaid.csproj" />
-      <ProjectReference Include="..\Siren.Infrastructure.Poco\Siren.Infrastructure.Poco.csproj" />
+        <ProjectReference Include="..\Siren.Infrastructure.Mermaid\Siren.Infrastructure.Mermaid.csproj"/>
+        <ProjectReference Include="..\Siren.Infrastructure.Poco\Siren.Infrastructure.Poco.csproj"/>
     </ItemGroup>
 
 </Project>
