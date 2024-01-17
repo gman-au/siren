@@ -9,10 +9,8 @@ jobs:
   nuget:
     runs-on: ubuntu-latest
     timeout-minutes: 5
-    env:
-      MAJOR_VERSION: 6
-      MINOR_VERSION: 0
-      SOLUTION_PATH: ./src/6.0
+    env:      
+      SOLUTION_PATH: ./src/6.0/
     steps:
     - uses: actions/checkout@v2
     - name: Setup .NET
@@ -22,7 +20,7 @@ jobs:
     - name: Build
       run: dotnet build $SOLUTION_PATH -c Release
     - name: Test
-      run: dotnet test -c Release --no-build
+      run: dotnet test $SOLUTION_PATH -c Release --no-build
     - name: Pack nugets
       run: |
         # Strip git ref prefix from version
