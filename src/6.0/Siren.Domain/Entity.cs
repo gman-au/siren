@@ -2,10 +2,10 @@
 
 namespace Siren.Domain
 {
-	public class Entity
-	{
-		public string Name { get; init; }
+    public class Entity
+    {
+        public string Name { get; init; }
 
-		public IEnumerable<Property> Properties { get; init; }
-	}
+        public IEnumerable<Property> Properties { get; init; }
+    }
 }

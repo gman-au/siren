@@ -8,130 +8,130 @@ using Siren.Domain;
 
 namespace Siren.Infrastructure.Poco
 {
-	public static class AssemblyScanner
-	{
-		public static Universe Perform(Assembly assembly)
-		{
-			var entities = new List<Entity>();
+    public static class AssemblyScanner
+    {
+        public static Universe Perform(Assembly assembly)
+        {
+            var entities = new List<Entity>();
 
-			var pocos =
-				assembly
-					.GetExportedTypes()
-					.Where(
-						o =>
-							o.IsClass
-					)
-					.ToList();
+            var pocos =
+                assembly
+                    .GetExportedTypes()
+                    .Where(
+                        o =>
+                            o.IsClass
+                    )
+                    .ToList();
 
-			// Map entities
-			foreach (var poco in pocos)
-			{
-				var name = poco.Name;
-				var properties = new List<Property>();
+            // Map entities
+            foreach (var poco in pocos)
+            {
+                var name = poco.Name;
+                var properties = new List<Property>();
 
-				foreach (var declaredProperty in poco.GetProperties(BindingFlags.Instance | BindingFlags.Public))
-				{
-					var propertyType = declaredProperty.PropertyType;
-					var propertyTypeName = declaredProperty.PropertyType.Name;
+                foreach (var declaredProperty in poco.GetProperties(BindingFlags.Instance | BindingFlags.Public))
+                {
+                    var propertyType = declaredProperty.PropertyType;
+                    var propertyTypeName = declaredProperty.PropertyType.Name;
 
-					// Is it nullable type? 
-					if (Nullable.GetUnderlyingType(propertyType) != null)
-					{
-						// It's nullable
-						propertyType = Nullable.GetUnderlyingType(propertyType);
-						propertyTypeName = $"{propertyType?.Name}";
-					}
+                    // Is it nullable type? 
+                    if (Nullable.GetUnderlyingType(propertyType) != null)
+                    {
+                        // It's nullable
+                        propertyType = Nullable.GetUnderlyingType(propertyType);
+                        propertyTypeName = $"{propertyType?.Name}";
+                    }
 
-					var property = new Property
-					{
-						Name = declaredProperty.Name,
-						Type = propertyTypeName,
-						IsPrimaryKey = ContainsAttribute<KeyAttribute>(declaredProperty),
-						IsForeignKey = ContainsAttribute<ForeignKeyAttribute>(declaredProperty),
-						IsUniqueKey = false
-					};
+                    var property = new Property
+                    {
+                        Name = declaredProperty.Name,
+                        Type = propertyTypeName,
+                        IsPrimaryKey = ContainsAttribute<KeyAttribute>(declaredProperty),
+                        IsForeignKey = ContainsAttribute<ForeignKeyAttribute>(declaredProperty),
+                        IsUniqueKey = false
+                    };
 
-					if (!IsVirtual(declaredProperty))
-					{
-						properties
-							.Add(property);
-					}
-				}
+                    if (!IsVirtual(declaredProperty))
+                    {
+                        properties
+                            .Add(property);
+                    }
+                }
 
-				var entity =
-					new Entity
-					{
-						Name = name,
-						Properties = properties
-					};
+                var entity =
+                    new Entity
+                    {
+                        Name = name,
+                        Properties = properties
+                    };
 
-				entities
-					.Add(entity);
-			}
+                entities
+                    .Add(entity);
+            }
 
-			var relationships = new List<Relationship>();
+            var relationships = new List<Relationship>();
 
-			// Map relationships
-			foreach (var poco in pocos)
-			{
-				foreach (var declaredProperty in poco.GetProperties(BindingFlags.Instance | BindingFlags.Public))
-				{
-					if (IsVirtual(declaredProperty))
-					{
-						var source = entities.FirstOrDefault(o => o.Name == declaredProperty.PropertyType.Name);
-						var target = entities.FirstOrDefault(o => o.Name == poco.Name);
+            // Map relationships
+            foreach (var poco in pocos)
+            {
+                foreach (var declaredProperty in poco.GetProperties(BindingFlags.Instance | BindingFlags.Public))
+                {
+                    if (IsVirtual(declaredProperty))
+                    {
+                        var source = entities.FirstOrDefault(o => o.Name == declaredProperty.PropertyType.Name);
+                        var target = entities.FirstOrDefault(o => o.Name == poco.Name);
 
-						if (source != null && target != null)
-						{
-							var relationship = new Relationship
-							{
-								Source = source,
-								Target = target,
-								SourceCardinality = CardinalityTypeEnum.ExactlyOne,
-								TargetCardinality = CardinalityTypeEnum.OneOrMore
-							};
+                        if (source != null && target != null)
+                        {
+                            var relationship = new Relationship
+                            {
+                                Source = source,
+                                Target = target,
+                                SourceCardinality = CardinalityTypeEnum.ExactlyOne,
+                                TargetCardinality = CardinalityTypeEnum.OneOrMore
+                            };
 
-							relationships
-								.Add(relationship);
-						}
-					}
-				}
-			}
+                            relationships
+                                .Add(relationship);
+                        }
+                    }
+                }
+            }
 
-			var result =
-				new Universe
-				{
-					Entities = entities,
-					Relationships = relationships
-				};
+            var result =
+                new Universe
+                {
+                    Entities = entities,
+                    Relationships = relationships
+                };
 
-			return result;
-		}
+            return result;
+        }
 
-		private static bool ContainsAttribute<T>(MemberInfo property) where T : Attribute
-		{
-			var customAttributes =
-				property
-					.CustomAttributes;
+        private static bool ContainsAttribute<T>(MemberInfo property) where T : Attribute
+        {
+            var customAttributes =
+                property
+                    .CustomAttributes;
 
-			var exists =
-				customAttributes
-					.Any(o => o.AttributeType == typeof(T));
+            var exists =
+                customAttributes
+                    .Any(o => o.AttributeType == typeof(T));
 
-			return exists;
-		}
+            return exists;
+        }
 
-		private static bool IsVirtual(PropertyInfo propertyInfo)
-		{
-			if (!propertyInfo.CanRead)
-			{
-				return false;
-			}
+        private static bool IsVirtual(PropertyInfo propertyInfo)
+        {
+            if (!propertyInfo.CanRead)
+            {
+                return false;
+            }
 
-			return
-				propertyInfo?
-					.GetGetMethod(true)?
-					.IsVirtual ?? false;
-		}
-	}
+            return
+                propertyInfo?
+                    .GetGetMethod(true)?
+                    .IsVirtual ?? false;
+        }
+    }
 }

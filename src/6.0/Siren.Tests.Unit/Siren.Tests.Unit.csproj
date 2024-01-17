@@ -19,8 +19,8 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\Siren.Infrastructure.Poco\Siren.Infrastructure.Poco.csproj" />
-      <ProjectReference Include="..\Siren.Tests.Domain\Siren.Tests.Domain.csproj" />
+        <ProjectReference Include="..\Siren.Infrastructure.Poco\Siren.Infrastructure.Poco.csproj"/>
+        <ProjectReference Include="..\Siren.Tests.Domain\Siren.Tests.Domain.csproj"/>
     </ItemGroup>
 
 </Project>

@@ -4,7 +4,7 @@
         <OutputType>Exe</OutputType>
         <TargetFramework>net6.0</TargetFramework>
     </PropertyGroup>
-    
+
     <PropertyGroup>
         <PackAsTool>true</PackAsTool>
         <PackageId>Gman.Siren</PackageId>
@@ -16,7 +16,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\Siren.Infrastructure.Io\Siren.Infrastructure.Io.csproj" />
+        <ProjectReference Include="..\Siren.Infrastructure.Io\Siren.Infrastructure.Io.csproj"/>
         <ProjectReference Include="..\Siren.Infrastructure.Mermaid\Siren.Infrastructure.Mermaid.csproj"/>
         <ProjectReference Include="..\Siren.Infrastructure.Poco\Siren.Infrastructure.Poco.csproj"/>
     </ItemGroup>
