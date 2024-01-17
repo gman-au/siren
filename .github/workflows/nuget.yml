@@ -1,0 +1,37 @@
+name: nuget
+
+on:
+  release:
+    types: [ published ] 
+    tags:
+      - v*
+jobs:
+  nuget:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    env:
+      MAJOR_VERSION: 6
+      MINOR_VERSION: 0
+      SOLUTION_PATH: ./src/6.0
+    steps:
+    - uses: actions/checkout@v2
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: 6.0.x            
+    - name: Build
+      run: dotnet build -c Release
+    - name: Test
+      run: dotnet test -c Release --no-build
+    - name: Pack nugets
+      run: |
+        # Strip git ref prefix from version
+        VERSION=$(echo "${{ github.ref }}" | sed -e 's,.*/\(.*\),\1,')
+          
+        # Strip "v" prefix from tag name
+        [[ "${{ github.ref }}" == "refs/tags/"* ]] && VERSION=$(echo $VERSION | sed -e 's/^v//')
+
+        echo VERSION=$VERSION          
+        dotnet pack -c Release --no-build --output . /p:Version=$VERSION
+    #- name: Push to NuGet
+      #run: dotnet nuget push "*.nupkg" --api-key ${{secrets.NUGET_ORG_API_KEY}} --source https://api.nuget.org/v3/index.json     
