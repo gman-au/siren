@@ -9,10 +9,10 @@ namespace Siren.Tests.Domain
 		[Key]
 		public Guid OrderId { get; set; }
 
-		[ForeignKey("SomeCustomer")]
+		[ForeignKey("CustomerReference")]
 		public Guid CustomerId { get; set; }
 
-		public virtual Customer SomeCustomer { get; set; }
+		public virtual Customer CustomerReference { get; set; }
 
 		public long ReferenceNumber { get; set; }
 

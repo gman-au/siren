@@ -1,9 +1,9 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using System.Text;
-using Microsoft.VisualBasic;
 using Siren.Infrastructure.Mermaid;
 
-namespace System.Infrastructure.Io
+namespace Siren.Infrastructure.Io
 {
 	public static class FileWriter
 	{
@@ -32,7 +32,7 @@ namespace System.Infrastructure.Io
 			if (string.IsNullOrEmpty(markdownAnchor))
 			{
 				Console
-					.WriteLine($"Markdown anchor \"{markdownAnchor}\"not specified, writing direcly...");
+					.WriteLine($"Markdown anchor \"{markdownAnchor}\"not specified, writing directly...");
 				
 				OverwriteFileContents(
 					filePath,

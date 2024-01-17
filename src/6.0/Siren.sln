@@ -12,7 +12,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Siren.Tests.Domain", "Siren
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Siren.Tool", "Siren.Tool\Siren.Tool.csproj", "{FDECB1A2-8F38-4938-A8CE-D361A581C19F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "System.Infrastructure.Io", "System.Infrastructure.Io\System.Infrastructure.Io.csproj", "{64DEC86E-29E9-4FB9-BE18-19B320D43B1B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Siren.Infrastructure.Io", "Siren.Infrastructure.Io\Siren.Infrastructure.Io.csproj", "{817A6FD5-E7E3-4F25-8DC9-99268E18443F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -44,9 +44,9 @@ Global
 		{FDECB1A2-8F38-4938-A8CE-D361A581C19F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FDECB1A2-8F38-4938-A8CE-D361A581C19F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FDECB1A2-8F38-4938-A8CE-D361A581C19F}.Release|Any CPU.Build.0 = Release|Any CPU
-		{64DEC86E-29E9-4FB9-BE18-19B320D43B1B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{64DEC86E-29E9-4FB9-BE18-19B320D43B1B}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{64DEC86E-29E9-4FB9-BE18-19B320D43B1B}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{64DEC86E-29E9-4FB9-BE18-19B320D43B1B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{817A6FD5-E7E3-4F25-8DC9-99268E18443F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{817A6FD5-E7E3-4F25-8DC9-99268E18443F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{817A6FD5-E7E3-4F25-8DC9-99268E18443F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{817A6FD5-E7E3-4F25-8DC9-99268E18443F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

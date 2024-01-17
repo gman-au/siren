@@ -6,7 +6,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\Siren.Infrastructure.Mermaid\Siren.Infrastructure.Mermaid.csproj" />
+        <ProjectReference Include="..\Siren.Infrastructure.Mermaid\Siren.Infrastructure.Mermaid.csproj" />
     </ItemGroup>
 
 </Project>
