@@ -2,9 +2,17 @@
 
     <PropertyGroup>
         <OutputType>Exe</OutputType>
-        <PackAsTool>true</PackAsTool>
-        <ToolCommandName>htmlpackager</ToolCommandName>
         <TargetFramework>net6.0</TargetFramework>
+    </PropertyGroup>
+    
+    <PropertyGroup>
+        <PackAsTool>true</PackAsTool>
+        <PackageId>Gman.Siren</PackageId>
+        <ToolCommandName>siren-gen</ToolCommandName>
+        <PackageOutputPath>./nupkg</PackageOutputPath>
+        <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+        <Description>Siren C# POCO to Mermaid ER markdown generation tool</Description>
+        <RepositoryUrl>https://github.com/gman-au/siren</RepositoryUrl>
     </PropertyGroup>
 
     <ItemGroup>
