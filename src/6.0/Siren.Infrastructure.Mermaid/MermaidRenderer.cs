@@ -12,13 +12,17 @@ namespace Siren.Infrastructure.Mermaid
 		{
 			var result = new StringBuilder();
 
+			// Text in file replace header
+			result
+				.AppendLine(MermaidConstants.SirenAnchorStart);
+			
 			// Mermaid header
 			result
-				.AppendLine("```mermaid");
+				.AppendLine(MermaidConstants.MermaidAnchorStart);
 
 			// Header
 			result
-				.AppendLine("\terDiagram");
+				.AppendLine($"\t{MermaidConstants.MermaidErDiagramHeader}");
 
 			foreach (var entity in universe.Entities)
 			{
@@ -71,7 +75,11 @@ namespace Siren.Infrastructure.Mermaid
 
 			// Mermaid footer
 			result
-				.AppendLine("```");
+				.AppendLine(MermaidConstants.MermaidAnchorEnd);
+				
+			// Text in file replace footer
+			result
+				.AppendLine(MermaidConstants.SirenAnchorEnd);
 
 			return result;
 		}

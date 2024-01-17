@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Infrastructure.Io;
 using System.IO;
 using System.Reflection;
 using Siren.Infrastructure.Mermaid;
@@ -12,6 +13,12 @@ if (args.Length < 2)
 
 var assemblyPath = args[0];
 var outputPath = args[1];
+var markdownAnchor = (string)null;
+
+if (args.Length > 2)
+{
+	markdownAnchor = args[2];
+}
 
 if (string.IsNullOrEmpty(assemblyPath))
 	throw new Exception("Assembly path argument invalid");
@@ -40,9 +47,11 @@ var result =
 	MermaidRenderer
 		.Perform(universe);
 
-File
-	.WriteAllText(
+FileWriter
+	.Perform(
 		outputPath,
-		result
-			.ToString()
-	);
+		result,
+		markdownAnchor);
+		
+Console
+	.WriteLine("Siren operation completed");
