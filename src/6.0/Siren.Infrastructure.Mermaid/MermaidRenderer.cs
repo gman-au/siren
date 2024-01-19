@@ -28,7 +28,7 @@ namespace Siren.Infrastructure.Mermaid
             {
                 // Entity header
                 result
-                    .AppendLine($"\t{entity.Name} {{");
+                    .AppendLine($"\t{entity.ShortName} {{");
 
                 foreach (var property in entity.Properties)
                 {
@@ -65,10 +65,10 @@ namespace Siren.Infrastructure.Mermaid
             {
                 result
                     .AppendLine(
-                        $"{relationship.Source?.Name}" +
+                        $"{relationship.Source?.ShortName}" +
                         $"{MapCardinalityToString(relationship.SourceCardinality, true)}--" +
                         $"{MapCardinalityToString(relationship.TargetCardinality, false)}" +
-                        $"{relationship.Target?.Name} " +
+                        $"{relationship.Target?.ShortName} " +
                         ": \"\""
                     );
             }

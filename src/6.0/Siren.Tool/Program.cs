@@ -4,6 +4,7 @@ using System.Reflection;
 using Siren.Infrastructure.Io;
 using Siren.Infrastructure.Mermaid;
 using Siren.Infrastructure.Poco;
+using Siren.Infrastructure.Snapshot;
 
 Console
     .WriteLine("Starting Siren console...");
@@ -32,7 +33,7 @@ try
 {
     assembly =
         Assembly
-            .LoadFile(assemblyPath);
+            .LoadFrom(assemblyPath);
 }
 catch (FileNotFoundException)
 {

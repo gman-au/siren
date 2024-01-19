@@ -61,7 +61,7 @@ namespace Siren.Infrastructure.Poco
                 var entity =
                     new Entity
                     {
-                        Name = name,
+                        ShortName = name,
                         Properties = properties
                     };
 
@@ -78,8 +78,8 @@ namespace Siren.Infrastructure.Poco
                 {
                     if (IsVirtual(declaredProperty))
                     {
-                        var source = entities.FirstOrDefault(o => o.Name == declaredProperty.PropertyType.Name);
-                        var target = entities.FirstOrDefault(o => o.Name == poco.Name);
+                        var source = entities.FirstOrDefault(o => o.ShortName == declaredProperty.PropertyType.Name);
+                        var target = entities.FirstOrDefault(o => o.ShortName == poco.Name);
 
                         if (source != null && target != null)
                         {

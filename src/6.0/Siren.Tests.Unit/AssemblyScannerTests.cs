@@ -51,7 +51,7 @@ namespace Siren.Tests.Unit
 
                 Assert.Equal(
                     "Customer",
-                    entities[0].Name
+                    entities[0].ShortName
                 );
                 Assert.Equal(
                     4,
@@ -60,7 +60,7 @@ namespace Siren.Tests.Unit
 
                 Assert.Equal(
                     "Order",
-                    entities[1].Name
+                    entities[1].ShortName
                 );
                 Assert.Equal(
                     4,
