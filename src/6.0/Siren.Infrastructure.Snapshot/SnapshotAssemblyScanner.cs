@@ -27,8 +27,15 @@ namespace Siren.Infrastructure.Snapshot
             // Map entities
             foreach (var modelSnapshotType in modelSnapshotTypes)
             {
-                var snapshot = (ModelSnapshot)Activator.CreateInstance(modelSnapshotType);
-                var entityTypes = snapshot?.Model.GetEntityTypes();
+                var snapshot =
+                    (ModelSnapshot)Activator
+                        .CreateInstance
+                            (modelSnapshotType);
+
+                var entityTypes =
+                    snapshot?
+                        .Model
+                        .GetEntityTypes();
 
                 foreach (var entityType in entityTypes ?? Array.Empty<IEntityType>())
                 {
@@ -52,16 +59,16 @@ namespace Siren.Infrastructure.Snapshot
                     {
                         var entityPropertyName = entityProperty.Name;
                         var entityPropertyType = entityProperty.ClrType;
-                        
+
                         // Is it nullable type? 
                         if (Nullable.GetUnderlyingType(entityPropertyType) != null)
                         {
                             // It's nullable
-                            entityPropertyType = 
+                            entityPropertyType =
                                 Nullable
                                     .GetUnderlyingType(entityPropertyType);
                         }
-                        
+
                         var property = new Property
                         {
                             Name = entityPropertyName,
@@ -90,20 +97,29 @@ namespace Siren.Infrastructure.Snapshot
                 // Map relationships
                 foreach (var entityType in entityTypes ?? Array.Empty<IEntityType>())
                 {
-                    // TODO
-                    var foreignKeys = entityType.GetForeignKeys();
+                    var foreignKeys =
+                        entityType
+                            .GetForeignKeys();
 
                     foreach (var foreignKey in foreignKeys)
                     {
-                        var navigation = foreignKey.GetNavigation(true);
+                        var navigation =
+                            foreignKey
+                                .GetNavigation(true);
+
                         var sourceType = navigation?.DeclaringEntityType;
                         var targetType = navigation?.TargetEntityType;
 
                         var sourceName = sourceType?.Name;
                         var targetName = targetType?.Name;
 
-                        var source = entities.FirstOrDefault(o => o.FullName == sourceName);
-                        var target = entities.FirstOrDefault(o => o.FullName == targetName);
+                        var source =
+                            entities
+                                .FirstOrDefault(o => o.FullName == sourceName);
+
+                        var target =
+                            entities
+                                .FirstOrDefault(o => o.FullName == targetName);
 
                         var sourceCardinality = CardinalityTypeEnum.ZeroOrOne;
                         var targetCardinality = CardinalityTypeEnum.ZeroOrOne;
