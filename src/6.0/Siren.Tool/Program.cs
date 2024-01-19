@@ -1,10 +1,9 @@
 ﻿using System;
 using System.IO;
 using System.Reflection;
+using Siren.Infrastructure.AssemblyLoad;
 using Siren.Infrastructure.Io;
 using Siren.Infrastructure.Mermaid;
-using Siren.Infrastructure.Poco;
-using Siren.Infrastructure.Snapshot;
 
 Console
     .WriteLine("Starting Siren console...");
@@ -41,7 +40,8 @@ catch (FileNotFoundException)
 }
 
 var universe =
-    AssemblyScanner
+    // AssemblyScanner
+    SnapshotAssemblyScanner
         .Perform(assembly);
 
 var result =

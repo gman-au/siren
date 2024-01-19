@@ -32,7 +32,7 @@ namespace Siren.Infrastructure.Io
             if (string.IsNullOrEmpty(markdownAnchor))
             {
                 Console
-                    .WriteLine($"Markdown anchor \"{markdownAnchor}\"not specified, writing directly...");
+                    .WriteLine($"Markdown anchor \"{markdownAnchor}\" not specified, writing directly...");
 
                 OverwriteFileContents(
                     filePath,

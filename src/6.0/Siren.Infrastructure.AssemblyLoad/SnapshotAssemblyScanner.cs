@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore.Metadata;
 using Siren.Domain;
 using Property = Siren.Domain.Property;
 
-namespace Siren.Infrastructure.Snapshot
+namespace Siren.Infrastructure.AssemblyLoad
 {
     public static class SnapshotAssemblyScanner
     {

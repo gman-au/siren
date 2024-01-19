@@ -1,13 +1,13 @@
 using System.Linq;
 using System.Reflection;
 using Siren.Domain;
-using Siren.Infrastructure.Poco;
+using Siren.Infrastructure.AssemblyLoad;
 using Siren.Tests.Domain;
 using Xunit;
 
 namespace Siren.Tests.Unit
 {
-    public class AssemblyScannerTests
+    public class PocoAssemblyScannerTests
     {
         private readonly TestContext _testContext = new();
 
@@ -34,7 +34,7 @@ namespace Siren.Tests.Unit
             public void ActScanAssembly()
             {
                 _result =
-                    AssemblyScanner
+                    PocoAssemblyScanner
                         .Perform(_assembly);
             }
 

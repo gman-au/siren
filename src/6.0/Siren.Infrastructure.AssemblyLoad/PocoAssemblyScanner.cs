@@ -6,9 +6,9 @@ using System.Linq;
 using System.Reflection;
 using Siren.Domain;
 
-namespace Siren.Infrastructure.Poco
+namespace Siren.Infrastructure.AssemblyLoad
 {
-    public static class AssemblyScanner
+    public static class PocoAssemblyScanner
     {
         public static Universe Perform(Assembly assembly)
         {
