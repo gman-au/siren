@@ -19,6 +19,10 @@ namespace Siren.Infrastructure.Mermaid
             // Mermaid header
             result
                 .AppendLine(MermaidConstants.MermaidAnchorStart);
+            
+            // (optional) neutral theme
+            result
+                .AppendLine($"\t{MermaidConstants.MermaidNeutralThemeLine}");
 
             // Header
             result
