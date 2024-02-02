@@ -2,6 +2,8 @@
 
 [![nuget](https://github.com/gman-au/siren/actions/workflows/nuget.yml/badge.svg)](https://github.com/gman-au/siren/actions/workflows/nuget.yml)
 
+![GitHub Release](https://img.shields.io/github/v/release/gman-au/siren)
+
 ## Summary
 It is a simple command line tool that can be installed from NuGet.
 When run, it will take a C# assembly of POCOs / domain objects, and create an entity relationship (ER) diagram in [Mermaid syntax](https://github.com/mermaid-js/mermaid).
