@@ -1,19 +1,12 @@
-﻿using System.Linq;
-using System.Reflection;
-using Microsoft.EntityFrameworkCore.Infrastructure;
+﻿using Siren.Domain;
 
 namespace Siren.Infrastructure.AssemblyLoad
 {
-    public static class AssemblyLoader
+    public class AssemblyLoader : IAssemblyLoader
     {
-        public static bool IsASnapshotAssembly(this Assembly assembly)
+        public Universe Perform(ProgramArguments arguments)
         {
-            return 
-                assembly
-                    .GetTypes()
-                    .Any(
-                        o => o.BaseType == typeof(ModelSnapshot)
-                    );
+            throw new System.NotImplementedException();
         }
     }
 }

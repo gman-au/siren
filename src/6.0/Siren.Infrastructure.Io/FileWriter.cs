@@ -1,13 +1,13 @@
 ﻿using System;
 using System.IO;
 using System.Text;
-using Siren.Infrastructure.Mermaid;
+using Siren.Infrastructure.Rendering;
 
 namespace Siren.Infrastructure.Io
 {
-    public static class FileWriter
+    public class FileWriter : IFileWriter
     {
-        public static void Perform(
+        public void Perform(
             string filePath,
             StringBuilder result,
             string markdownAnchor = null
