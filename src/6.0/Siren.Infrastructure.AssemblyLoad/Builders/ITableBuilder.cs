@@ -5,8 +5,8 @@ namespace Siren.Infrastructure.AssemblyLoad.Builders
 {
     public interface ITableBuilder
     {
-        public bool IsApplicable(Instruction instr);
+        bool IsApplicable(Instruction instr);
 
-        public ExtractedTable Process(Instruction instr);
+        ExtractedTable Process(Instruction instr);
     }
 }

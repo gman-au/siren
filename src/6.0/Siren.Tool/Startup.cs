@@ -24,6 +24,8 @@ namespace Siren.Tool
                 .AddSingleton<IEntityBuilder, EntityBuilder>()
                 .AddSingleton<IPropertyBuilder, PropertyBuilder>()
                 .AddSingleton<ITableBuilder, TableBuilder>()
+                .AddSingleton<IRelationshipBuilder, RelationshipBuilder>()
+                .AddSingleton<IRelationshipFilter, RelationshipFilter>()
                 .AddSingleton<IDomainRenderer, MermaidRenderer>()
                 .AddSingleton<IProgramArgumentsParser, ProgramArgumentsParser>();
 
