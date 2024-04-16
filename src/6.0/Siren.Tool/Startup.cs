@@ -4,6 +4,7 @@ using Siren.Application;
 using Siren.Infrastructure.AssemblyLoad;
 using Siren.Infrastructure.AssemblyLoad.Builders;
 using Siren.Infrastructure.AssemblyLoad.Configuration;
+using Siren.Infrastructure.AssemblyLoad.Mapping;
 using Siren.Infrastructure.Io;
 using Siren.Infrastructure.Parsing;
 using Siren.Infrastructure.Rendering;
@@ -20,6 +21,7 @@ namespace Siren.Tool
                 .AddSingleton<IBuildConfigurationProvider, BuildConfigurationProvider>()
                 .AddSingleton<ISirenApplication, SirenApplication>()
                 .AddSingleton<IAssemblyLoader, AssemblyLoader>()
+                .AddSingleton<IAssemblyMapper, AssemblyMapper>()
                 .AddSingleton<IFileWriter, FileWriter>()
                 .AddSingleton<IEntityBuilder, EntityBuilder>()
                 .AddSingleton<IPropertyBuilder, PropertyBuilder>()

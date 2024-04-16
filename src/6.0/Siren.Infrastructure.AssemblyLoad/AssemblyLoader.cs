@@ -4,23 +4,28 @@ using Microsoft.Extensions.Logging;
 using Mono.Cecil;
 using Siren.Domain;
 using Siren.Infrastructure.AssemblyLoad.Builders;
+using Siren.Infrastructure.AssemblyLoad.Mapping;
 
 namespace Siren.Infrastructure.AssemblyLoad
 {
     public class AssemblyLoader : IAssemblyLoader
     {
         private readonly IEntityBuilder _entityBuilder;
+        private readonly IAssemblyMapper _assemblyMapper;
         private readonly ILogger<AssemblyLoader> _logger;
         private readonly IRelationshipBuilder _relationshipBuilder;
 
         public AssemblyLoader(
             ILogger<AssemblyLoader> logger,
-            IEntityBuilder entityBuilder, IRelationshipBuilder relationshipBuilder
+            IEntityBuilder entityBuilder, 
+            IRelationshipBuilder relationshipBuilder, 
+            IAssemblyMapper assemblyMapper
         )
         {
             _logger = logger;
             _entityBuilder = entityBuilder;
             _relationshipBuilder = relationshipBuilder;
+            _assemblyMapper = assemblyMapper;
         }
 
         public Universe Perform(ProgramArguments arguments)
@@ -93,7 +98,14 @@ namespace Siren.Infrastructure.AssemblyLoad
                                     .Where(o => o != null)
                                     .ToList();
 
-                            
+                            var result =
+                                _assemblyMapper
+                                    .Map(
+                                        entities,
+                                        relationships
+                                    );
+
+                            return result;
                         }
                     }
                 }

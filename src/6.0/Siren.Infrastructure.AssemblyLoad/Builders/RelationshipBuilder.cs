@@ -120,9 +120,11 @@ namespace Siren.Infrastructure.AssemblyLoad.Builders
                         case "HasForeignKey":
                             break;
                         case "WithMany":
+                            result.SourceCardinality = CardinalityTypeEnum.ZeroOrOne;
                             result.TargetCardinality = CardinalityTypeEnum.ZeroOrMore;
                             break;
                         case "WithOne":
+                            result.SourceCardinality = CardinalityTypeEnum.ZeroOrOne;
                             result.TargetCardinality = CardinalityTypeEnum.ZeroOrOne;
                             break;
                     }
