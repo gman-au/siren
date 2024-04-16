@@ -47,9 +47,6 @@ namespace Siren.Infrastructure.AssemblyLoad
                         _logger
                             .LogInformation($"Located snapshot type {type.Name}");
 
-                        // delete me
-                        var instrData = new StringBuilder();
-
                         foreach (var method in type.Methods)
                         {
                             if (method.Name != "BuildModel") continue;
@@ -72,6 +69,7 @@ namespace Siren.Infrastructure.AssemblyLoad
                                             _entityBuilder
                                                 .Process(o)
                                     )
+                                    .Where(o => o != null)
                                     .ToList();
 
                             var relationshipInstructions =
@@ -87,7 +85,7 @@ namespace Siren.Infrastructure.AssemblyLoad
 
                             var relationships =
                                 relationshipInstructions
-                                    .Select(
+                                    .SelectMany(
                                         o =>
                                             _relationshipBuilder
                                                 .Process(

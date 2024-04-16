@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Mono.Cecil;
 using Mono.Cecil.Cil;
@@ -12,16 +13,12 @@ namespace Siren.Infrastructure.AssemblyLoad.Builders
     public class RelationshipBuilder : IRelationshipBuilder
     {
         private const string EntityMethodName = "Entity";
-        
-        private readonly IBuildConfigurationProvider _buildConfigurationProvider;
-        private readonly IRelationshipFilter _relationshipFilter;
 
-        public RelationshipBuilder(
-            IBuildConfigurationProvider buildConfigurationProvider, 
-            IRelationshipFilter relationshipFilter)
+        private readonly IBuildConfigurationProvider _buildConfigurationProvider;
+
+        public RelationshipBuilder(IBuildConfigurationProvider buildConfigurationProvider)
         {
             _buildConfigurationProvider = buildConfigurationProvider;
-            _relationshipFilter = relationshipFilter;
         }
 
         public bool IsApplicable(Instruction instr)
@@ -37,103 +34,141 @@ namespace Siren.Infrastructure.AssemblyLoad.Builders
             return mr.Name == EntityMethodName;
         }
 
-        public ExtractedRelationship Process(Instruction instr, ICollection<ExtractedEntity> entities)
+        public ICollection<ExtractedRelationship> Process(Instruction instr, ICollection<ExtractedEntity> entities)
         {
             var configuration =
                 _buildConfigurationProvider
                     .Get()
                     .First();
-            
-            var result = new ExtractedRelationship();
-            
+
+            var results = new List<ExtractedRelationship>();
+
             // Extract name
             var currInstr =
                 instr
                     .StepPrevious(configuration.StepsBackToEntityName);
 
             if (currInstr.OpCode != OpCodes.Ldstr) return null;
-            
-            var extractedSourceName = currInstr.Operand.ToString();
 
-            if (string.IsNullOrEmpty(extractedSourceName)) return null;
-            
+            var extractedSource =
+                currInstr
+                    .Operand
+                    .ToString()
+                    .SplitNamespace();
+
+            if (string.IsNullOrEmpty(extractedSource.Item2)) return null;
+
             var matchedSourceEntity =
                 entities
-                    .FirstOrDefault(o => o.EntityName == extractedSourceName);
+                    .FirstOrDefault(
+                        o =>
+                            o.Namespace == extractedSource.Item1 &&
+                            o.EntityName == extractedSource.Item2
+                    );
 
             if (matchedSourceEntity == null) return null;
-
-            result.Source = matchedSourceEntity;
 
             // Get property builder instruction
             currInstr =
                 instr
                     .StepNext(configuration.StepsForwardToPropertyBuilder);
-            
+
             if (currInstr.OpCode != OpCodes.Ldftn) return null;
 
             if (currInstr.Operand is not MethodDefinition methodReference) return null;
-            
+
             // Extract relationship indicators
             var relationshipInstrs =
                 methodReference
                     .Body
                     .Instructions
-                    .Where(
-                        o =>
-                            _relationshipFilter
-                                .IsApplicable(o)
-                    )
                     .ToList();
 
             if (relationshipInstrs.Count > 0)
             {
-                foreach (var relationshipInstr in relationshipInstrs)
+                ExtractedRelationship newResult = null;
+                for (var i = 0; i < relationshipInstrs.Count; i++)
                 {
-                    var valueInstr = relationshipInstr.Previous;
+                    var mexInstr = relationshipInstrs[i];
 
-                    if (valueInstr.OpCode != OpCodes.Ldstr) continue;
-
-                    // var value = valueInstr.Operand.ToString();
-                    
-                    if (relationshipInstr.Operand is not MethodReference mr) continue;
+                    if (mexInstr.Operand is not MethodReference mr) continue;
 
                     switch (mr.Name)
                     {
                         case "HasOne":
-                            var entityInstr = valueInstr.Previous;
+                            if (newResult != null)
+                                results.Add(newResult);
+
+                            newResult = new ExtractedRelationship
+                            {
+                                Source = matchedSourceEntity
+                            };
+                            var entityInstr =
+                                mexInstr
+                                    .StepPrevious(2);
+
                             if (entityInstr.OpCode != OpCodes.Ldstr) break;
-                            var extractedTargetName = entityInstr.Operand.ToString();
-                            if (!string.IsNullOrEmpty(extractedTargetName))
+
+                            var (extractedNamespace, extractedEntityName) =
+                                entityInstr
+                                    .Operand
+                                    .ToString()
+                                    .SplitNamespace();
+
+                            if (!string.IsNullOrEmpty(extractedEntityName))
                             {
                                 var matchedEntity =
                                     entities
-                                        .FirstOrDefault(o => 
-                                            o.EntityName == extractedTargetName);
+                                        .FirstOrDefault(
+                                            o =>
+                                                o.EntityName == extractedEntityName &&
+                                                o.Namespace == extractedNamespace
+                                        );
 
                                 if (matchedEntity != null)
                                 {
-                                    result.Target = matchedEntity;
+                                    newResult.Target = matchedEntity;
+                                    newResult.TargetCardinality = CardinalityTypeEnum.ZeroOrOne;
                                 }
                             }
+
+                            break;
+                        case "IsRequired":
+                            if (newResult != null)
+                                newResult.TargetCardinality =
+                                    newResult.TargetCardinality == CardinalityTypeEnum.ZeroOrMore
+                                        ? CardinalityTypeEnum.OneOrMore
+                                        : CardinalityTypeEnum.ExactlyOne;
                             break;
                         case "HasForeignKey":
                             break;
                         case "WithMany":
-                            result.SourceCardinality = CardinalityTypeEnum.ZeroOrOne;
-                            result.TargetCardinality = CardinalityTypeEnum.ZeroOrMore;
+                            if (newResult != null)
+                                newResult.SourceCardinality = CardinalityTypeEnum.ZeroOrMore;
                             break;
                         case "WithOne":
-                            result.SourceCardinality = CardinalityTypeEnum.ZeroOrOne;
-                            result.TargetCardinality = CardinalityTypeEnum.ZeroOrOne;
+                            if (newResult != null)
+                                newResult.SourceCardinality = CardinalityTypeEnum.ZeroOrOne;
                             break;
                     }
                 }
+
+                if (newResult != null)
+                    results.Add(newResult);
             }
 
-            if (result.Source == null || result.Target == null) return null;
-            
-            return result;
+            results =
+                results
+                    .Where(
+                        o =>
+                            o.Source != null &&
+                            o.Target != null &&
+                            o.SourceCardinality != CardinalityTypeEnum.NotSet &&
+                            o.TargetCardinality != CardinalityTypeEnum.NotSet
+                    )
+                    .ToList();
+
+            return results;
         }
     }
 }

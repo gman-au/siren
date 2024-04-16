@@ -39,11 +39,12 @@ namespace Siren.Infrastructure.AssemblyLoad.Builders
 
             currInstr = instr;
 
-            while (currInstr.OpCode == OpCodes.Callvirt || currInstr.OpCode == OpCodes.Call)
+            // while (currInstr.OpCode == OpCodes.Callvirt || currInstr.OpCode == OpCodes.Call)
+            while (currInstr.OpCode != OpCodes.Pop)
             {
                 currInstr =
                     currInstr
-                        .StepNext(2);
+                        .StepNext(1);
 
                 if (currInstr.OpCode == OpCodes.Callvirt)
                     continue;
@@ -72,6 +73,8 @@ namespace Siren.Infrastructure.AssemblyLoad.Builders
 
             result.PropertyName = propertyName;
 
+            if (string.IsNullOrEmpty(result.DataType)) return null;
+            
             return result;
         }
     }

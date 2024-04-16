@@ -8,6 +8,6 @@ namespace Siren.Infrastructure.AssemblyLoad.Builders
     {
         bool IsApplicable(Instruction instr);
 
-        ExtractedRelationship Process(Instruction instr, ICollection<ExtractedEntity> entities);
+        ICollection<ExtractedRelationship> Process(Instruction instr, ICollection<ExtractedEntity> entities);
     }
 }

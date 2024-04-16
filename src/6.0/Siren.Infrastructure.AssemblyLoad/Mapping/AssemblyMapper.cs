@@ -2,6 +2,7 @@
 using System.Linq;
 using Siren.Domain;
 using Siren.Infrastructure.AssemblyLoad.Domain;
+using Siren.Infrastructure.AssemblyLoad.Extensions;
 
 namespace Siren.Infrastructure.AssemblyLoad.Mapping
 {
@@ -17,7 +18,7 @@ namespace Siren.Infrastructure.AssemblyLoad.Mapping
                         o =>
                             new Entity
                             {
-                                ShortName = o.EntityName.Replace(".", "_"),
+                                ShortName = o.EntityName?.ToEscaped(),
                                 FullName = o.EntityName,
                                 Properties =
                                     o
@@ -26,9 +27,8 @@ namespace Siren.Infrastructure.AssemblyLoad.Mapping
                                             p =>
                                                 new Property
                                                 {
-                                                    Name = p.PropertyName.Replace(".", "_"),
-                                                    // Type = p.DataType,
-                                                    Type = "string",
+                                                    Name = p.PropertyName?.ToEscaped(),
+                                                    Type = p.DataType?.ToEscaped(),
                                                     IsPrimaryKey = false,
                                                     IsForeignKey = false,
                                                     IsUniqueKey = false

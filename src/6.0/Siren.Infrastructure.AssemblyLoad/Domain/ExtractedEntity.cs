@@ -7,6 +7,8 @@ namespace Siren.Infrastructure.AssemblyLoad.Domain
     {
         public Instruction ReferenceInstruction { get; set; }
         
+        public string Namespace { get; set; }
+        
         public string TableName { get; set; }
         
         public string EntityName { get; set; }

@@ -59,7 +59,16 @@ namespace Siren.Infrastructure.AssemblyLoad.Builders
                     .StepPrevious(configuration.StepsBackToEntityName);
 
             if (currInstr.OpCode == OpCodes.Ldstr)
-                result.EntityName = currInstr.Operand.ToString();
+            {
+                var splitName = 
+                    currInstr
+                        .Operand
+                        .ToString()
+                        .SplitNamespace();
+
+                result.EntityName = splitName.Item2;
+                result.Namespace = splitName.Item1;
+            }
 
             // Get property builder instruction
             currInstr =
@@ -83,6 +92,7 @@ namespace Siren.Infrastructure.AssemblyLoad.Builders
             var extractedProperties =
                 propertyInstructions
                     .Select(o => _propertyBuilder.Process(o))
+                    .Where(o => o != null)
                     .ToList();
             
             // Extract table information
@@ -108,6 +118,8 @@ namespace Siren.Infrastructure.AssemblyLoad.Builders
                     result.TableName = extractedTable.TableName;
                 }
             }
+
+            if (!extractedProperties.Any()) return null;
 
             result.Properties = extractedProperties;
 
