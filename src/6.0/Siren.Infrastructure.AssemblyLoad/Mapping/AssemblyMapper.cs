@@ -30,7 +30,7 @@ namespace Siren.Infrastructure.AssemblyLoad.Mapping
                                                     Name = p.PropertyName?.ToEscaped(),
                                                     Type = p.DataType?.ToEscaped(),
                                                     IsPrimaryKey = false,
-                                                    IsForeignKey = false,
+                                                    IsForeignKey = p.IsForeignKey,
                                                     IsUniqueKey = false
                                                 }
                                         )

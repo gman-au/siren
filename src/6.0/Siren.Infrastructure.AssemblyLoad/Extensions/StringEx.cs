@@ -36,6 +36,10 @@ namespace Siren.Infrastructure.AssemblyLoad.Extensions
                         ""
                     )
                     .Replace(
+                        " ",
+                        ""
+                    )
+                    .Replace(
                         ")",
                         ""
                     )

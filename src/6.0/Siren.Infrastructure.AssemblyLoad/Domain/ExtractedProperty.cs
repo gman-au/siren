@@ -11,5 +11,7 @@ namespace Siren.Infrastructure.AssemblyLoad.Domain
         public string ColumnName { get; set; }
         
         public string DataType { get; set; }
+
+        public bool IsForeignKey { get; set; }
     }
 }

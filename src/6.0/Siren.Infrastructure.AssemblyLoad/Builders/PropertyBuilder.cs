@@ -39,7 +39,6 @@ namespace Siren.Infrastructure.AssemblyLoad.Builders
 
             currInstr = instr;
 
-            // while (currInstr.OpCode == OpCodes.Callvirt || currInstr.OpCode == OpCodes.Call)
             while (currInstr.OpCode != OpCodes.Pop)
             {
                 currInstr =

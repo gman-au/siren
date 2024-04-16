@@ -59,12 +59,11 @@ namespace Siren.Infrastructure.AssemblyLoad.Builders
             if (string.IsNullOrEmpty(extractedSource.Item2)) return null;
 
             var matchedSourceEntity =
-                entities
-                    .FirstOrDefault(
-                        o =>
-                            o.Namespace == extractedSource.Item1 &&
-                            o.EntityName == extractedSource.Item2
-                    );
+                GetMatchedEntity(
+                    entities,
+                    extractedSource.Item2,
+                    extractedSource.Item1
+                );
 
             if (matchedSourceEntity == null) return null;
 
@@ -118,12 +117,11 @@ namespace Siren.Infrastructure.AssemblyLoad.Builders
                             if (!string.IsNullOrEmpty(extractedEntityName))
                             {
                                 var matchedEntity =
-                                    entities
-                                        .FirstOrDefault(
-                                            o =>
-                                                o.EntityName == extractedEntityName &&
-                                                o.Namespace == extractedNamespace
-                                        );
+                                    GetMatchedEntity(
+                                        entities,
+                                        extractedEntityName,
+                                        extractedNamespace
+                                    );
 
                                 if (matchedEntity != null)
                                 {
@@ -141,6 +139,26 @@ namespace Siren.Infrastructure.AssemblyLoad.Builders
                                         : CardinalityTypeEnum.ExactlyOne;
                             break;
                         case "HasForeignKey":
+                            var foreignKeyInstr =
+                                mexInstr
+                                    .StepPrevious(2);
+
+                            if (foreignKeyInstr.OpCode != OpCodes.Ldstr) break;
+
+                            var foreignKeyValue = 
+                                foreignKeyInstr
+                                    .Operand
+                                    .ToString();
+
+                            var matchedProperty =
+                                matchedSourceEntity
+                                    .Properties
+                                    .FirstOrDefault(o => o.PropertyName == foreignKeyValue);
+
+                            if (matchedProperty != null)
+                            {
+                                matchedProperty.IsForeignKey = true;
+                            }
                             break;
                         case "WithMany":
                             if (newResult != null)
@@ -170,5 +188,17 @@ namespace Siren.Infrastructure.AssemblyLoad.Builders
 
             return results;
         }
+
+        private static ExtractedEntity GetMatchedEntity(
+            ICollection<ExtractedEntity> entities,
+            string extractedEntityName,
+            string extractedNamespace
+        ) =>
+                entities
+                    .FirstOrDefault(
+                        o =>
+                            o.EntityName == extractedEntityName &&
+                            o.Namespace == extractedNamespace
+                    );
     }
 }
