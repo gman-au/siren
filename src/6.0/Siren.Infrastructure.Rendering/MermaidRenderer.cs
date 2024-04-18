@@ -4,11 +4,11 @@ using System.Linq;
 using System.Text;
 using Siren.Domain;
 
-namespace Siren.Infrastructure.Mermaid
+namespace Siren.Infrastructure.Rendering
 {
-    public static class MermaidRenderer
+    public class MermaidRenderer : IDomainRenderer
     {
-        public static StringBuilder Perform(Universe universe)
+        public StringBuilder Perform(Universe universe)
         {
             var result = new StringBuilder();
 

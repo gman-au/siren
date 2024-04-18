@@ -2,11 +2,10 @@
 
     <PropertyGroup>
         <TargetFramework>net6.0</TargetFramework>
-        <IsPackable>false</IsPackable>
     </PropertyGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\Siren.Infrastructure.Rendering\Siren.Infrastructure.Rendering.csproj" />
+      <ProjectReference Include="..\Siren.Domain\Siren.Domain.csproj" />
     </ItemGroup>
 
     <ItemGroup>

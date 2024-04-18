@@ -1,13 +1,21 @@
 ﻿using System;
 using System.IO;
 using System.Text;
-using Siren.Infrastructure.Mermaid;
+using Microsoft.Extensions.Logging;
+using Siren.Infrastructure.Rendering;
 
 namespace Siren.Infrastructure.Io
 {
-    public static class FileWriter
+    public class FileWriter : IFileWriter
     {
-        public static void Perform(
+        private readonly ILogger<FileWriter> _logger;
+
+        public FileWriter(ILogger<FileWriter> logger)
+        {
+            _logger = logger;
+        }
+
+        public void Perform(
             string filePath,
             StringBuilder result,
             string markdownAnchor = null
@@ -19,8 +27,8 @@ namespace Siren.Infrastructure.Io
 
             if (!exists)
             {
-                Console
-                    .WriteLine($"Existing file \"{filePath}\" not found, creating...");
+                _logger
+                    .LogInformation($"Existing file \"{filePath}\" not found, creating...");
 
                 OverwriteFileContents(
                     filePath,
@@ -31,8 +39,8 @@ namespace Siren.Infrastructure.Io
 
             if (string.IsNullOrEmpty(markdownAnchor))
             {
-                Console
-                    .WriteLine($"Markdown anchor \"{markdownAnchor}\" not specified, writing directly...");
+                _logger
+                    .LogInformation($"Markdown anchor \"{markdownAnchor}\" not specified, writing directly...");
 
                 OverwriteFileContents(
                     filePath,
@@ -55,8 +63,8 @@ namespace Siren.Infrastructure.Io
 
             if (markdownPosition < 0)
             {
-                Console
-                    .WriteLine($"Markdown anchor \"{markdownAnchor}\"not found in file; overwriting...");
+                _logger
+                    .LogInformation($"Markdown anchor \"{markdownAnchor}\"not found in file; overwriting...");
 
                 OverwriteFileContents(
                     filePath,

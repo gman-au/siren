@@ -2,8 +2,6 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Siren.Domain", "Siren.Domain\Siren.Domain.csproj", "{320D89FF-0A57-4B83-8C92-A55A6FCD22C4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Siren.Infrastructure.Mermaid", "Siren.Infrastructure.Mermaid\Siren.Infrastructure.Mermaid.csproj", "{8EAC3B7B-4F18-4418-9855-9A989C2C2D12}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Siren.Tests.Unit", "Siren.Tests.Unit\Siren.Tests.Unit.csproj", "{F92FF1EE-6379-429E-9467-39A160EB2805}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Siren.Tests.Domain", "Siren.Tests.Domain\Siren.Tests.Domain.csproj", "{945DFE5E-6ECA-493E-80EE-1690234E1D90}"
@@ -13,6 +11,12 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Siren.Infrastructure.Io", "Siren.Infrastructure.Io\Siren.Infrastructure.Io.csproj", "{817A6FD5-E7E3-4F25-8DC9-99268E18443F}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Siren.Infrastructure.AssemblyLoad", "Siren.Infrastructure.AssemblyLoad\Siren.Infrastructure.AssemblyLoad.csproj", "{52396B80-D7FB-46FC-9E89-F2294D40ED58}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Siren.Application", "Siren.Application\Siren.Application.csproj", "{8886CFB8-F7C5-4724-AC68-8AF105C3F469}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Siren.Infrastructure.Parsing", "Siren.Infrastructure.Parsing\Siren.Infrastructure.Parsing.csproj", "{BA24894D-3627-4E1D-B705-186427390594}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Siren.Infrastructure.Rendering", "Siren.Infrastructure.Rendering\Siren.Infrastructure.Rendering.csproj", "{35D32947-0188-4767-B3A2-A151BE812282}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -24,10 +28,6 @@ Global
 		{320D89FF-0A57-4B83-8C92-A55A6FCD22C4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{320D89FF-0A57-4B83-8C92-A55A6FCD22C4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{320D89FF-0A57-4B83-8C92-A55A6FCD22C4}.Release|Any CPU.Build.0 = Release|Any CPU
-		{8EAC3B7B-4F18-4418-9855-9A989C2C2D12}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{8EAC3B7B-4F18-4418-9855-9A989C2C2D12}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{8EAC3B7B-4F18-4418-9855-9A989C2C2D12}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{8EAC3B7B-4F18-4418-9855-9A989C2C2D12}.Release|Any CPU.Build.0 = Release|Any CPU
 		{F92FF1EE-6379-429E-9467-39A160EB2805}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{F92FF1EE-6379-429E-9467-39A160EB2805}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F92FF1EE-6379-429E-9467-39A160EB2805}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -48,5 +48,17 @@ Global
 		{52396B80-D7FB-46FC-9E89-F2294D40ED58}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{52396B80-D7FB-46FC-9E89-F2294D40ED58}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{52396B80-D7FB-46FC-9E89-F2294D40ED58}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8886CFB8-F7C5-4724-AC68-8AF105C3F469}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8886CFB8-F7C5-4724-AC68-8AF105C3F469}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8886CFB8-F7C5-4724-AC68-8AF105C3F469}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8886CFB8-F7C5-4724-AC68-8AF105C3F469}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BA24894D-3627-4E1D-B705-186427390594}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BA24894D-3627-4E1D-B705-186427390594}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BA24894D-3627-4E1D-B705-186427390594}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BA24894D-3627-4E1D-B705-186427390594}.Release|Any CPU.Build.0 = Release|Any CPU
+		{35D32947-0188-4767-B3A2-A151BE812282}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{35D32947-0188-4767-B3A2-A151BE812282}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{35D32947-0188-4767-B3A2-A151BE812282}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{35D32947-0188-4767-B3A2-A151BE812282}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

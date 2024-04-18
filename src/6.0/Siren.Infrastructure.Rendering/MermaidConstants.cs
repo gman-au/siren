@@ -1,4 +1,4 @@
-﻿namespace Siren.Infrastructure.Mermaid
+﻿namespace Siren.Infrastructure.Rendering
 {
     public static class MermaidConstants
     {

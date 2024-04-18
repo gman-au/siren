@@ -16,9 +16,15 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\Siren.Infrastructure.AssemblyLoad\Siren.Infrastructure.AssemblyLoad.csproj" />
-        <ProjectReference Include="..\Siren.Infrastructure.Io\Siren.Infrastructure.Io.csproj"/>
-        <ProjectReference Include="..\Siren.Infrastructure.Mermaid\Siren.Infrastructure.Mermaid.csproj"/>
+        <ProjectReference Include="..\Siren.Application\Siren.Application.csproj" />
+        <ProjectReference Include="..\Siren.Infrastructure.Rendering\Siren.Infrastructure.Rendering.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="6.0.0" />
+        <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="6.0.0" />
+        <PackageReference Include="Microsoft.Extensions.Logging" Version="6.0.0" />
+        <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="6.0.0" />
     </ItemGroup>
 
 </Project>
