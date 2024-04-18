@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using Microsoft.Extensions.Logging;
 using Siren.Domain;
 using Siren.Infrastructure.AssemblyLoad.Domain;
 using Siren.Infrastructure.AssemblyLoad.Extensions;
@@ -8,6 +9,13 @@ namespace Siren.Infrastructure.AssemblyLoad.Mapping
 {
     public class AssemblyMapper : IAssemblyMapper
     {
+        private readonly ILogger<AssemblyMapper> _logger;
+
+        public AssemblyMapper(ILogger<AssemblyMapper> logger)
+        {
+            _logger = logger;
+        }
+
         public Universe Map(
             ICollection<ExtractedEntity> extractedEntities, 
             ICollection<ExtractedRelationship> extractedRelationships)
@@ -35,7 +43,8 @@ namespace Siren.Infrastructure.AssemblyLoad.Mapping
                                                 }
                                         )
                             }
-                    );
+                    )
+                    .ToList();
 
             var relationships =
                 extractedRelationships
@@ -48,8 +57,15 @@ namespace Siren.Infrastructure.AssemblyLoad.Mapping
                                 SourceCardinality = o.SourceCardinality,
                                 TargetCardinality = o.TargetCardinality
                             }
-                    );
+                    )
+                    .ToList();
 
+            _logger
+                .LogInformation($"{entities.Count} entities mapped from {extractedEntities.Count} extracted");
+            
+            _logger
+                .LogInformation($"{relationships.Count} relationships mapped from {extractedRelationships.Count} extracted");
+            
             return new Universe
             {
                 Entities = entities,

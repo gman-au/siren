@@ -1,5 +1,4 @@
 ﻿using System.Linq;
-using System.Text;
 using Microsoft.Extensions.Logging;
 using Mono.Cecil;
 using Siren.Domain;
@@ -10,6 +9,9 @@ namespace Siren.Infrastructure.AssemblyLoad
 {
     public class AssemblyLoader : IAssemblyLoader
     {
+        private const string ModelSnapshotBaseType = "ModelSnapshot";
+        private const string BuildModelMethod = "BuildModel";
+        
         private readonly IEntityBuilder _entityBuilder;
         private readonly IAssemblyMapper _assemblyMapper;
         private readonly ILogger<AssemblyLoader> _logger;
@@ -42,15 +44,18 @@ namespace Siren.Infrastructure.AssemblyLoad
             {
                 foreach (var type in module.Types)
                 {
-                    if (type.BaseType?.Name == "ModelSnapshot")
+                    if (type.BaseType?.Name == ModelSnapshotBaseType)
                     {
                         _logger
                             .LogInformation($"Located snapshot type {type.Name}");
 
                         foreach (var method in type.Methods)
                         {
-                            if (method.Name != "BuildModel") continue;
-
+                            if (method.Name != BuildModelMethod) continue;
+                            
+                            _logger
+                                .LogInformation($"Located build model method");
+                            
                             var entityInstructions =
                                 method
                                     .Body
@@ -71,6 +76,9 @@ namespace Siren.Infrastructure.AssemblyLoad
                                     )
                                     .Where(o => o != null)
                                     .ToList();
+                            
+                            _logger
+                                .LogInformation($"Extracted {entities.Count} entities");
 
                             var relationshipInstructions =
                                 method
@@ -95,6 +103,9 @@ namespace Siren.Infrastructure.AssemblyLoad
                                     )
                                     .Where(o => o != null)
                                     .ToList();
+                            
+                            _logger
+                                .LogInformation($"Extracted {relationships.Count} relationships");
 
                             var result =
                                 _assemblyMapper
