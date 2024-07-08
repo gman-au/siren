@@ -12,6 +12,8 @@ namespace Siren.Infrastructure.AssemblyLoad.Domain
         
         public string DataType { get; set; }
 
+        public bool IsPrimaryKey { get; set; }
+        
         public bool IsForeignKey { get; set; }
     }
 }

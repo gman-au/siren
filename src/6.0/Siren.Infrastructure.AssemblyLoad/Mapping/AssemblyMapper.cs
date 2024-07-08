@@ -37,7 +37,7 @@ namespace Siren.Infrastructure.AssemblyLoad.Mapping
                                                 {
                                                     Name = p.PropertyName?.ToEscaped(),
                                                     Type = p.DataType?.ToEscaped(),
-                                                    IsPrimaryKey = false,
+                                                    IsPrimaryKey = p.IsPrimaryKey,
                                                     IsForeignKey = p.IsForeignKey,
                                                     IsUniqueKey = false
                                                 }
