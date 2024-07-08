@@ -12,18 +12,21 @@ namespace Siren.Infrastructure.AssemblyLoad.Builders
     {
         private const string EntityMethodName = "Entity";
         private readonly IBuildConfigurationProvider _buildConfigurationProvider;
+        private readonly IKeyBuilder _keyBuilder;
         private readonly IPropertyBuilder _propertyBuilder;
         private readonly ITableBuilder _tableBuilder;
 
         public EntityBuilder(
             IBuildConfigurationProvider buildConfigurationProvider,
-            IPropertyBuilder propertyBuilder, 
-            ITableBuilder tableBuilder
+            IPropertyBuilder propertyBuilder,
+            ITableBuilder tableBuilder,
+            IKeyBuilder keyBuilder
         )
         {
             _buildConfigurationProvider = buildConfigurationProvider;
             _propertyBuilder = propertyBuilder;
             _tableBuilder = tableBuilder;
+            _keyBuilder = keyBuilder;
         }
 
         public bool IsApplicable(Instruction instr)
@@ -60,7 +63,7 @@ namespace Siren.Infrastructure.AssemblyLoad.Builders
 
             if (currInstr.OpCode == OpCodes.Ldstr)
             {
-                var splitName = 
+                var splitName =
                     currInstr
                         .Operand
                         .ToString()
@@ -84,9 +87,11 @@ namespace Siren.Infrastructure.AssemblyLoad.Builders
                 methodReference
                     .Body
                     .Instructions
-                    .Where(o => 
-                        _propertyBuilder
-                            .IsApplicable(o))
+                    .Where(
+                        o =>
+                            _propertyBuilder
+                                .IsApplicable(o)
+                    )
                     .ToList();
 
             var extractedProperties =
@@ -94,7 +99,26 @@ namespace Siren.Infrastructure.AssemblyLoad.Builders
                     .Select(o => _propertyBuilder.Process(o))
                     .Where(o => o != null)
                     .ToList();
-            
+
+            var keyInstructions =
+                methodReference
+                    .Body
+                    .Instructions
+                    .Where(
+                        o =>
+                            _keyBuilder
+                                .IsApplicable(o)
+                    );
+
+            foreach (var keyInstruction in keyInstructions)
+            {
+                _keyBuilder
+                    .Process(
+                        keyInstruction,
+                        extractedProperties
+                    );
+            }
+
             // Extract table information
             var tableInstr =
                 methodReference
