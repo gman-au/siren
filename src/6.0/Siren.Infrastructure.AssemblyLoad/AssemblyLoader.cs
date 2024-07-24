@@ -35,6 +35,9 @@ namespace Siren.Infrastructure.AssemblyLoad
             var filePath =
                 arguments
                     .TestAssemblyPath;
+            var context =
+                arguments
+                    .DatabaseContext;
 
             var assembly =
                 AssemblyDefinition
@@ -46,6 +49,9 @@ namespace Siren.Infrastructure.AssemblyLoad
                 {
                     if (type.BaseType?.Name == ModelSnapshotBaseType)
                     {
+                        if (context is not null && type.Name != $"{context}ModelSnapshot")
+                            continue;
+
                         _logger
                             .LogInformation($"Located snapshot type {type.Name}");
 

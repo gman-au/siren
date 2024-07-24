@@ -7,12 +7,13 @@
 
     <PropertyGroup>
         <PackAsTool>true</PackAsTool>
-        <PackageId>Gman.Siren</PackageId>
-        <ToolCommandName>siren-gen</ToolCommandName>
+        <PackageId>Macomi.Siren</PackageId>
+        <ToolCommandName>macomi-siren-gen</ToolCommandName>
         <PackageOutputPath>./nupkg</PackageOutputPath>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-        <Description>Siren C# POCO to Mermaid ER markdown generation tool</Description>
-        <RepositoryUrl>https://github.com/gman-au/siren</RepositoryUrl>
+        <Description>Macomi fork of Siren C# POCO to Mermaid ER markdown generation tool</Description>
+        <RepositoryUrl>https://github.com/timt00/siren</RepositoryUrl>
+        <Title>Macomi Fork of GMan.Siren</Title>
     </PropertyGroup>
 
     <ItemGroup>
