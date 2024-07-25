@@ -2,14 +2,25 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Microsoft.Extensions.Logging;
 using Siren.Domain;
 
 namespace Siren.Infrastructure.Rendering
 {
     public class MermaidRenderer : IDomainRenderer
     {
+        private readonly ILogger<MermaidRenderer> _logger;
+
+        public MermaidRenderer(ILogger<MermaidRenderer> logger)
+        {
+            _logger = logger;
+        }
+
         public StringBuilder Perform(Universe universe)
         {
+            _logger
+                .LogInformation("Commencing render to Mermaid syntax");
+            
             var result = new StringBuilder();
 
             // Text in file replace header
@@ -28,6 +39,9 @@ namespace Siren.Infrastructure.Rendering
             result
                 .AppendLine($"\t{MermaidConstants.MermaidErDiagramHeader}");
 
+            _logger
+                .LogInformation("Rendered header");
+            
             foreach (var entity in universe.Entities)
             {
                 // Entity header
@@ -58,6 +72,9 @@ namespace Siren.Infrastructure.Rendering
 
                     result
                         .AppendLine();
+                    
+                    _logger
+                        .LogInformation($"Rendered entity: {entity.ShortName}");
                 }
 
                 // Entity footer
@@ -84,6 +101,9 @@ namespace Siren.Infrastructure.Rendering
             // Text in file replace footer
             result
                 .AppendLine(MermaidConstants.SirenAnchorEnd);
+
+            _logger
+                .LogInformation("Completed render to Mermaid syntax");
 
             return result;
         }
