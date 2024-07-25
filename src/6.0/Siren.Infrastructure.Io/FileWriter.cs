@@ -95,7 +95,7 @@ namespace Siren.Infrastructure.Io
                     );
 
             // +2 for length of carriage return (otherwise appends line feed each re-write)
-            var lengthToTrim = MermaidConstants.SirenAnchorEnd.Length + 2;
+            var lengthToTrim = MermaidConstants.SirenAnchorEnd.Length + Environment.NewLine.Length;
 
             if (sirenAnchorEndPosition < 0)
             {
