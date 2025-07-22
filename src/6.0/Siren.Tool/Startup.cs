@@ -6,7 +6,6 @@ using Siren.Infrastructure.AssemblyLoad.Builders;
 using Siren.Infrastructure.AssemblyLoad.Configuration;
 using Siren.Infrastructure.AssemblyLoad.Mapping;
 using Siren.Infrastructure.Io;
-using Siren.Infrastructure.Parsing;
 using Siren.Infrastructure.Rendering;
 
 namespace Siren.Tool
@@ -29,8 +28,7 @@ namespace Siren.Tool
                 .AddSingleton<IRelationshipBuilder, RelationshipBuilder>()
                 .AddSingleton<IKeyBuilder, KeyBuilder>()
                 .AddSingleton<IRelationshipFilter, RelationshipFilter>()
-                .AddSingleton<IDomainRenderer, MermaidRenderer>()
-                .AddSingleton<IProgramArgumentsParser, ProgramArgumentsParser>();
+                .AddSingleton<IDomainRenderer, MermaidRenderer>();
 
             services
                 .AddLogging(o => o.AddConsole());

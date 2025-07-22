@@ -1,8 +1,10 @@
 ﻿using System;
+using System.Linq;
+using CommandLine;
 using Microsoft.Extensions.Logging;
+using Siren.Domain;
 using Siren.Infrastructure.AssemblyLoad;
 using Siren.Infrastructure.Io;
-using Siren.Infrastructure.Parsing;
 using Siren.Infrastructure.Rendering;
 
 namespace Siren.Application
@@ -13,36 +15,42 @@ namespace Siren.Application
         private readonly IDomainRenderer _domainRenderer;
         private readonly IFileWriter _fileWriter;
         private readonly ILogger<SirenApplication> _logger;
-        private readonly IProgramArgumentsParser _programArgumentsParser;
 
         public SirenApplication(
             ILogger<SirenApplication> logger,
-            IProgramArgumentsParser programArgumentsParser,
             IFileWriter fileWriter,
             IDomainRenderer domainRenderer,
             IAssemblyLoader assemblyLoader
         )
         {
             _logger = logger;
-            _programArgumentsParser = programArgumentsParser;
             _fileWriter = fileWriter;
             _domainRenderer = domainRenderer;
             _assemblyLoader = assemblyLoader;
         }
 
-        public void Perform(string[] args)
+        public int Perform(string[] args)
         {
             try
             {
                 _logger
                     .LogInformation("Starting Siren console...");
 
-                var arguments =
-                    _programArgumentsParser
-                        .Parse(args);
+                var parsedArguments =
+                    Parser
+                        .Default
+                        .ParseArguments<ProgramArguments>(args);
+
+                if (parsedArguments.Errors.Any())
+                    return -1;
+
+                var arguments = parsedArguments.Value;
 
                 var outputPath = arguments.OutputFilePath;
                 var markdownAnchor = arguments.MarkdownAnchor;
+                
+                if (!string.IsNullOrWhiteSpace(arguments.TestAssemblyPath) && !string.IsNullOrWhiteSpace(arguments.ConnectionString))
+                    throw new Exception("Specify one of either test assembly path or connection string.");
 
                 var universe =
                     _assemblyLoader
@@ -66,7 +74,11 @@ namespace Siren.Application
             {
                 _logger
                     .LogError($"Error encountered: {ex.Message}");
+
+                return -2;
             }
+
+            return 0;
         }
     }
 }

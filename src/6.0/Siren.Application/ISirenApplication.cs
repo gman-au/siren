@@ -1,7 +1,9 @@
-﻿namespace Siren.Application
+﻿using Siren.Domain;
+
+namespace Siren.Application
 {
     public interface ISirenApplication
     {
-        void Perform(string[] args);
+        int Perform(string[] args);
     }
 }
