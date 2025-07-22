@@ -4,7 +4,6 @@ using System.Linq;
 using CommandLine;
 using Microsoft.Extensions.Logging;
 using Siren.Domain;
-using Siren.Infrastructure.AssemblyLoad;
 using Siren.Infrastructure.Io;
 using Siren.Infrastructure.Rendering;
 using Siren.Interfaces;

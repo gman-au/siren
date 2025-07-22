@@ -7,6 +7,7 @@ using Siren.Infrastructure.AssemblyLoad.Configuration;
 using Siren.Infrastructure.AssemblyLoad.Mapping;
 using Siren.Infrastructure.Io;
 using Siren.Infrastructure.Rendering;
+using Siren.Infrastructure.SchemaSearch;
 using Siren.Interfaces;
 
 namespace Siren.Tool
@@ -16,11 +17,12 @@ namespace Siren.Tool
         public static IServiceCollection AddServices()
         {
             var services = new ServiceCollection();
-
+            
             services
                 .AddSingleton<IBuildConfigurationProvider, BuildConfigurationProvider>()
                 .AddSingleton<ISirenApplication, SirenApplication>()
                 .AddSingleton<IUniverseLoader, AssemblyLoader>()
+                .AddSingleton<IUniverseLoader, ConnectionStringLoader>()
                 .AddSingleton<IAssemblyMapper, AssemblyMapper>()
                 .AddSingleton<IFileWriter, FileWriter>()
                 .AddSingleton<IEntityBuilder, EntityBuilder>()
@@ -29,8 +31,9 @@ namespace Siren.Tool
                 .AddSingleton<IRelationshipBuilder, RelationshipBuilder>()
                 .AddSingleton<IKeyBuilder, KeyBuilder>()
                 .AddSingleton<IRelationshipFilter, RelationshipFilter>()
+                .AddSingleton<ISearchApplication, SearchApplication>()
                 .AddSingleton<IDomainRenderer, MermaidRenderer>();
-
+            
             services
                 .AddLogging(o => o.AddConsole());
             

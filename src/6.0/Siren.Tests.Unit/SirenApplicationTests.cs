@@ -1,7 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
 using NSubstitute;
 using Siren.Application;
-using Siren.Infrastructure.AssemblyLoad;
 using Siren.Infrastructure.Io;
 using Siren.Infrastructure.Rendering;
 using Siren.Interfaces;
