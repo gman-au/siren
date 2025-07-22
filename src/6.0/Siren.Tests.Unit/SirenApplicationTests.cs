@@ -4,6 +4,7 @@ using Siren.Application;
 using Siren.Infrastructure.AssemblyLoad;
 using Siren.Infrastructure.Io;
 using Siren.Infrastructure.Rendering;
+using Siren.Interfaces;
 using Xunit;
 
 namespace Siren.Tests.Unit
@@ -11,7 +12,7 @@ namespace Siren.Tests.Unit
     public class SirenApplicationTests
     {
         private readonly TestContext _context = new();
-        
+
         [Fact]
         public void Test_Valid_Assembly_Arguments()
         {
@@ -19,7 +20,7 @@ namespace Siren.Tests.Unit
             _context.ActRunApplication();
             _context.AssertSuccessExitCode();
         }
-        
+
         [Fact]
         public void Test_Valid_Connection_String_Arguments()
         {
@@ -27,7 +28,7 @@ namespace Siren.Tests.Unit
             _context.ActRunApplication();
             _context.AssertSuccessExitCode();
         }
-        
+
         [Fact]
         public void Test_Too_Many_Arguments()
         {
@@ -35,7 +36,7 @@ namespace Siren.Tests.Unit
             _context.ActRunApplication();
             _context.AssertProgramErrorExitCode();
         }
-        
+
         [Fact]
         public void Test_Missing_Output_Argument()
         {
@@ -43,32 +44,36 @@ namespace Siren.Tests.Unit
             _context.ActRunApplication();
             _context.AssertArgumentErrorExitCode();
         }
-        
+
         private class TestContext
         {
-            private string[] _args; 
             private readonly SirenApplication _sut;
+            private string[] _args;
             private int _exitCode;
 
             public TestContext()
             {
-                var assemblyLoader = Substitute.For<IAssemblyLoader>();
+                var universeLoader = Substitute.For<IUniverseLoader>();
                 var domainRenderer = Substitute.For<IDomainRenderer>();
                 var fileWriter = Substitute.For<IFileWriter>();
                 var logger = Substitute.For<ILogger<SirenApplication>>();
+
+                universeLoader
+                    .IsApplicable(null)
+                    .ReturnsForAnyArgs(true);
 
                 _sut =
                     new SirenApplication(
                         logger,
                         fileWriter,
                         domainRenderer,
-                        assemblyLoader
+                        new[] { universeLoader }
                     );
             }
 
             public void ArrangeAssemblyPathArguments()
             {
-                _args = new []
+                _args = new[]
                 {
                     "-a",
                     "C:\\test_path\\test_assembly.dll",
@@ -79,7 +84,7 @@ namespace Siren.Tests.Unit
 
             public void ArrangeMissingOutputArgument()
             {
-                _args = new []
+                _args = new[]
                 {
                     "-a",
                     "C:\\test_path\\test_assembly.dll",
@@ -90,7 +95,7 @@ namespace Siren.Tests.Unit
 
             public void ArrangeConnectionStringArguments()
             {
-                _args = new []
+                _args = new[]
                 {
                     "-c",
                     "db//my-connection-string",
@@ -101,7 +106,7 @@ namespace Siren.Tests.Unit
 
             public void ArrangeAllArguments()
             {
-                _args = new []
+                _args = new[]
                 {
                     "-a",
                     "C:\\test_path\\test_assembly.dll",
@@ -116,24 +121,33 @@ namespace Siren.Tests.Unit
 
             public void ActRunApplication()
             {
-                _exitCode = 
+                _exitCode =
                     _sut
                         .Perform(_args);
             }
 
             public void AssertArgumentErrorExitCode()
             {
-                Assert.Equal(-1, _exitCode);
+                Assert.Equal(
+                    -1,
+                    _exitCode
+                );
             }
 
             public void AssertProgramErrorExitCode()
             {
-                Assert.Equal(-2, _exitCode);
+                Assert.Equal(
+                    -2,
+                    _exitCode
+                );
             }
-            
+
             public void AssertSuccessExitCode()
             {
-                Assert.Equal(0, _exitCode);
+                Assert.Equal(
+                    0,
+                    _exitCode
+                );
             }
         }
     }

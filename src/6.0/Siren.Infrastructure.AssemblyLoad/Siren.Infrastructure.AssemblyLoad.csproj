@@ -12,6 +12,7 @@
     
     <ItemGroup>
       <ProjectReference Include="..\Siren.Domain\Siren.Domain.csproj" />
+      <ProjectReference Include="..\Siren.Interfaces\Siren.Interfaces.csproj" />
     </ItemGroup>
     
 </Project>

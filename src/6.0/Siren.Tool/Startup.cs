@@ -7,6 +7,7 @@ using Siren.Infrastructure.AssemblyLoad.Configuration;
 using Siren.Infrastructure.AssemblyLoad.Mapping;
 using Siren.Infrastructure.Io;
 using Siren.Infrastructure.Rendering;
+using Siren.Interfaces;
 
 namespace Siren.Tool
 {
@@ -19,7 +20,7 @@ namespace Siren.Tool
             services
                 .AddSingleton<IBuildConfigurationProvider, BuildConfigurationProvider>()
                 .AddSingleton<ISirenApplication, SirenApplication>()
-                .AddSingleton<IAssemblyLoader, AssemblyLoader>()
+                .AddSingleton<IUniverseLoader, AssemblyLoader>()
                 .AddSingleton<IAssemblyMapper, AssemblyMapper>()
                 .AddSingleton<IFileWriter, FileWriter>()
                 .AddSingleton<IEntityBuilder, EntityBuilder>()

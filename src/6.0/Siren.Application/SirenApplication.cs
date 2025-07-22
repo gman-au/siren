@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using CommandLine;
 using Microsoft.Extensions.Logging;
@@ -6,27 +7,28 @@ using Siren.Domain;
 using Siren.Infrastructure.AssemblyLoad;
 using Siren.Infrastructure.Io;
 using Siren.Infrastructure.Rendering;
+using Siren.Interfaces;
 
 namespace Siren.Application
 {
     public class SirenApplication : ISirenApplication
     {
-        private readonly IAssemblyLoader _assemblyLoader;
         private readonly IDomainRenderer _domainRenderer;
         private readonly IFileWriter _fileWriter;
         private readonly ILogger<SirenApplication> _logger;
+        private readonly IEnumerable<IUniverseLoader> _universeLoaders;
 
         public SirenApplication(
             ILogger<SirenApplication> logger,
             IFileWriter fileWriter,
             IDomainRenderer domainRenderer,
-            IAssemblyLoader assemblyLoader
+            IEnumerable<IUniverseLoader> universeLoaders
         )
         {
             _logger = logger;
             _fileWriter = fileWriter;
             _domainRenderer = domainRenderer;
-            _assemblyLoader = assemblyLoader;
+            _universeLoaders = universeLoaders;
         }
 
         public int Perform(string[] args)
@@ -48,12 +50,22 @@ namespace Siren.Application
 
                 var outputPath = arguments.OutputFilePath;
                 var markdownAnchor = arguments.MarkdownAnchor;
-                
-                if (!string.IsNullOrWhiteSpace(arguments.TestAssemblyPath) && !string.IsNullOrWhiteSpace(arguments.ConnectionString))
+
+                var assemblyProvided = !string.IsNullOrWhiteSpace(arguments.TestAssemblyPath);
+                var connectionStringProvided = !string.IsNullOrWhiteSpace(arguments.ConnectionString);
+
+                if (assemblyProvided && connectionStringProvided)
                     throw new Exception("Specify one of either test assembly path or connection string.");
 
+                var universeLoader =
+                    _universeLoaders
+                        .FirstOrDefault(o => o.IsApplicable(arguments));
+
+                if (universeLoader == null)
+                    throw new Exception("An error was encountered; no data loading was performed based on the arguments provided.");
+
                 var universe =
-                    _assemblyLoader
+                    universeLoader
                         .Perform(arguments);
 
                 var result =
