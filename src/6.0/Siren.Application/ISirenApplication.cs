@@ -1,6 +1,4 @@
-﻿using Siren.Domain;
-
-namespace Siren.Application
+﻿namespace Siren.Application
 {
     public interface ISirenApplication
     {
