@@ -4,10 +4,11 @@ using Mono.Cecil;
 using Siren.Domain;
 using Siren.Infrastructure.AssemblyLoad.Builders;
 using Siren.Infrastructure.AssemblyLoad.Mapping;
+using Siren.Interfaces;
 
 namespace Siren.Infrastructure.AssemblyLoad
 {
-    public class AssemblyLoader : IAssemblyLoader
+    public class AssemblyLoader : IUniverseLoader
     {
         private const string ModelSnapshotBaseType = "ModelSnapshot";
         private const string BuildModelMethod = "BuildModel";
@@ -28,6 +29,11 @@ namespace Siren.Infrastructure.AssemblyLoad
             _entityBuilder = entityBuilder;
             _relationshipBuilder = relationshipBuilder;
             _assemblyMapper = assemblyMapper;
+        }
+
+        public bool IsApplicable(ProgramArguments arguments)
+        {
+            return !string.IsNullOrEmpty(arguments?.TestAssemblyPath);
         }
 
         public Universe Perform(ProgramArguments arguments)

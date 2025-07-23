@@ -18,6 +18,7 @@
     <ItemGroup>
         <ProjectReference Include="..\Siren.Application\Siren.Application.csproj" />
         <ProjectReference Include="..\Siren.Infrastructure.Rendering\Siren.Infrastructure.Rendering.csproj" />
+        <ProjectReference Include="..\Siren.Infrastructure.SchemaSearch\Siren.Infrastructure.SchemaSearch.csproj" />
     </ItemGroup>
 
     <ItemGroup>

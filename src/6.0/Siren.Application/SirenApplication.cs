@@ -1,51 +1,70 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using CommandLine;
 using Microsoft.Extensions.Logging;
-using Siren.Infrastructure.AssemblyLoad;
+using Siren.Domain;
 using Siren.Infrastructure.Io;
-using Siren.Infrastructure.Parsing;
 using Siren.Infrastructure.Rendering;
+using Siren.Interfaces;
 
 namespace Siren.Application
 {
     public class SirenApplication : ISirenApplication
     {
-        private readonly IAssemblyLoader _assemblyLoader;
         private readonly IDomainRenderer _domainRenderer;
         private readonly IFileWriter _fileWriter;
         private readonly ILogger<SirenApplication> _logger;
-        private readonly IProgramArgumentsParser _programArgumentsParser;
+        private readonly IEnumerable<IUniverseLoader> _universeLoaders;
 
         public SirenApplication(
             ILogger<SirenApplication> logger,
-            IProgramArgumentsParser programArgumentsParser,
             IFileWriter fileWriter,
             IDomainRenderer domainRenderer,
-            IAssemblyLoader assemblyLoader
+            IEnumerable<IUniverseLoader> universeLoaders
         )
         {
             _logger = logger;
-            _programArgumentsParser = programArgumentsParser;
             _fileWriter = fileWriter;
             _domainRenderer = domainRenderer;
-            _assemblyLoader = assemblyLoader;
+            _universeLoaders = universeLoaders;
         }
 
-        public void Perform(string[] args)
+        public int Perform(string[] args)
         {
             try
             {
                 _logger
                     .LogInformation("Starting Siren console...");
 
-                var arguments =
-                    _programArgumentsParser
-                        .Parse(args);
+                var parsedArguments =
+                    Parser
+                        .Default
+                        .ParseArguments<ProgramArguments>(args);
+
+                if (parsedArguments.Errors.Any())
+                    return -1;
+
+                var arguments = parsedArguments.Value;
 
                 var outputPath = arguments.OutputFilePath;
                 var markdownAnchor = arguments.MarkdownAnchor;
 
+                var assemblyProvided = !string.IsNullOrWhiteSpace(arguments.TestAssemblyPath);
+                var connectionStringProvided = !string.IsNullOrWhiteSpace(arguments.ConnectionString);
+
+                if (assemblyProvided && connectionStringProvided)
+                    throw new Exception("Specify one of either test assembly path or connection string.");
+
+                var universeLoader =
+                    _universeLoaders
+                        .FirstOrDefault(o => o.IsApplicable(arguments));
+
+                if (universeLoader == null)
+                    throw new Exception("An error was encountered; no data loading was performed based on the arguments provided.");
+
                 var universe =
-                    _assemblyLoader
+                    universeLoader
                         .Perform(arguments);
 
                 var result =
@@ -66,7 +85,11 @@ namespace Siren.Application
             {
                 _logger
                     .LogError($"Error encountered: {ex.Message}");
+
+                return -2;
             }
+
+            return 0;
         }
     }
 }

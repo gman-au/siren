@@ -12,7 +12,6 @@
     <ItemGroup>
       <ProjectReference Include="..\Siren.Infrastructure.AssemblyLoad\Siren.Infrastructure.AssemblyLoad.csproj" />
       <ProjectReference Include="..\Siren.Infrastructure.Io\Siren.Infrastructure.Io.csproj" />
-      <ProjectReference Include="..\Siren.Infrastructure.Parsing\Siren.Infrastructure.Parsing.csproj" />
     </ItemGroup>
 
 </Project>

@@ -6,6 +6,7 @@
     </PropertyGroup>
 
     <ItemGroup>
+        <PackageReference Include="NSubstitute" Version="2.0.3" />
         <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.1.0"/>
         <PackageReference Include="xunit" Version="2.4.1"/>
         <PackageReference Include="xunit.runner.visualstudio" Version="2.4.3">
@@ -19,6 +20,7 @@
     </ItemGroup>
 
     <ItemGroup>
+        <ProjectReference Include="..\Siren.Application\Siren.Application.csproj" />
         <ProjectReference Include="..\Siren.Infrastructure.AssemblyLoad\Siren.Infrastructure.AssemblyLoad.csproj" />
         <ProjectReference Include="..\Siren.Tests.Domain\Siren.Tests.Domain.csproj"/>
     </ItemGroup>
