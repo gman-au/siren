@@ -42,12 +42,13 @@ namespace Siren.Infrastructure.SchemaSearch
                             Properties =
                                 t
                                     .Columns
+                                    .OrderBy(o => o.OrdinalPosition)
                                     .Select(
                                         c =>
                                             new Property
                                             {
                                                 Name = c.ColumnName,
-                                                Type = c.DataType.ToString(),
+                                                Type = c.DataType,
                                                 IsPrimaryKey = false,
                                                 IsForeignKey = false,
                                                 IsUniqueKey = false

@@ -41,8 +41,13 @@ namespace Siren.Infrastructure.Rendering
 
             _logger
                 .LogInformation("Rendered header");
-            
-            foreach (var entity in universe.Entities)
+
+            var entities =
+                universe
+                    .Entities
+                    .OrderBy(o => o.FullName);
+
+            foreach (var entity in entities)
             {
                 // Entity header
                 result
