@@ -1,0 +1,31 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net9.0</TargetFramework>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <PackAsTool>true</PackAsTool>
+    <PackageId>Gman.Siren</PackageId>
+    <ToolCommandName>siren-gen</ToolCommandName>
+    <PackageOutputPath>./nupkg</PackageOutputPath>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <Description>Siren C# POCO to Mermaid ER markdown generation tool</Description>
+    <RepositoryUrl>https://github.com/gman-au/siren</RepositoryUrl>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Siren.Application\Siren.Application.csproj" />
+    <ProjectReference Include="..\Siren.Infrastructure.Rendering\Siren.Infrastructure.Rendering.csproj" />
+    <ProjectReference Include="..\Siren.Infrastructure.SchemaSearch\Siren.Infrastructure.SchemaSearch.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="9.0.8" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="9.0.8" />
+    <PackageReference Include="Microsoft.Extensions.Logging" Version="9.0.8" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="9.0.8" />
+  </ItemGroup>
+
+</Project>
