@@ -10,6 +10,11 @@ public class UniverseFilter : IUniverseFilter
 {
     public List<T> FilterEntities<T>(IEnumerable<T> extractedEntities, ProgramArguments arguments)
     {
+        if (arguments.FilterEntities == null && arguments.SkipEntities == null)
+        {
+            return extractedEntities.ToList();
+        }
+        
         var filterEntities = LoadCommaSeparatedValues(arguments.FilterEntities);
         var skipEntities = LoadCommaSeparatedValues(arguments.SkipEntities);
 

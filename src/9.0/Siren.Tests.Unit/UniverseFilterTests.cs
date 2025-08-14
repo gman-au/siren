@@ -6,11 +6,10 @@ using Xunit;
 
 namespace Siren.Tests.Unit
 {
-    public class LoaderTests
+    public class UniverseFilterTests
     {
         private readonly IUniverseFilter _sut = new UniverseFilter();
-
-
+        
         [Fact]
         public void Test_AssemblyFilterEntities_FiltersBySubstring()
         {
