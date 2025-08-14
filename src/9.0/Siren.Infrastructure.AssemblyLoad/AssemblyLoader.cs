@@ -1,8 +1,11 @@
+using System;
+using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Extensions.Logging;
 using Mono.Cecil;
 using Siren.Domain;
 using Siren.Infrastructure.AssemblyLoad.Builders;
+using Siren.Infrastructure.AssemblyLoad.Domain;
 using Siren.Infrastructure.AssemblyLoad.Mapping;
 using Siren.Interfaces;
 
@@ -48,36 +51,35 @@ namespace Siren.Infrastructure.AssemblyLoad
                 {
                     if (type.BaseType?.Name == ModelSnapshotBaseType)
                     {
-                        _logger.LogInformation($"Located snapshot type {type.Name}");
+                        _logger.LogInformation("Located snapshot type {TypeName}", type.Name);
 
                         foreach (var method in type.Methods)
                         {
                             if (method.Name != BuildModelMethod)
                                 continue;
 
-                            _logger.LogInformation($"Located build model method");
+                            _logger.LogInformation("Located build model method");
 
                             var entityInstructions = method
                                 .Body.Instructions.Where(o => _entityBuilder.IsApplicable(o))
                                 .ToList();
 
-                            var entities = entityInstructions
-                                .Select(o => _entityBuilder.Process(o))
-                                .Where(o => o != null)
-                                .ToList();
+                            var entities = FilterEntities(
+                                entityInstructions.Select(o => _entityBuilder.Process(o)), arguments);
 
-                            _logger.LogInformation($"Extracted {entities.Count} entities");
+                            _logger.LogInformation("Extracted {EntitiesCount} entities", entities.Count);
 
                             var relationshipInstructions = method
                                 .Body.Instructions.Where(o => _relationshipBuilder.IsApplicable(o))
                                 .ToList();
 
                             var relationships = relationshipInstructions
-                                .SelectMany(o => _relationshipBuilder.Process(o, entities))
-                                .Where(o => o != null)
+                                .SelectMany(o => _relationshipBuilder.Process(o, entities)
+                                                 // Handle nulls gracefully for relationships among filtered entities
+                                                 ?? Enumerable.Empty<ExtractedRelationship>())
                                 .ToList();
 
-                            _logger.LogInformation($"Extracted {relationships.Count} relationships");
+                            _logger.LogInformation("Extracted {RelationshipsCount} relationships", relationships.Count);
 
                             var result = _assemblyMapper.Map(entities, relationships);
 
@@ -88,6 +90,29 @@ namespace Siren.Infrastructure.AssemblyLoad
             }
 
             return null;
+        }
+
+        public List<ExtractedEntity> FilterEntities(IEnumerable<ExtractedEntity> extractedEntities,
+            ProgramArguments arguments)
+        {
+            var filterEntities = LoadCommaSeparatedValues(arguments.FilterEntities);
+            var skipEntities = LoadCommaSeparatedValues(arguments.SkipEntities);
+
+            var entities = extractedEntities
+                .Where(o => o != null &&
+                            (!filterEntities.Any() || filterEntities.Any(f =>
+                                o.EntityName.Contains(f, StringComparison.OrdinalIgnoreCase)))
+                            && !skipEntities.Contains(o.EntityName))
+                .ToList();
+            return entities;
+        }
+
+        private List<string> LoadCommaSeparatedValues(string values)
+        {
+            return values?.Split(',')
+                .Select(o => o.Trim())
+                .Where(o => !string.IsNullOrEmpty(o))
+                .ToList() ?? [];
         }
     }
 }
