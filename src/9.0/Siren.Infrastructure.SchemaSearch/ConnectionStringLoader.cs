@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using SchemaSearch.Domain.Schema;
@@ -43,12 +44,35 @@ namespace Siren.Infrastructure.SchemaSearch
                             IsForeignKey = IsForeignKey(t, c, allTables),
                             IsUniqueKey = false,
                         }),
-                })
+                });
+            var filteredEntities = FilterEntities(entities, arguments);
+
+            var relationships = BuildRelationships(allTables, filteredEntities);
+
+            return new Universe { Entities = filteredEntities, Relationships = relationships };
+        }
+        
+        public List<Entity> FilterEntities(IEnumerable<Entity> extractedEntities,
+            ProgramArguments arguments)
+        {
+            var filterEntities = LoadCommaSeparatedValues(arguments.FilterEntities);
+            var skipEntities = LoadCommaSeparatedValues(arguments.SkipEntities);
+
+            var entities = extractedEntities
+                .Where(o => o != null &&
+                            (!filterEntities.Any() || filterEntities.Any(f =>
+                                o.ShortName.Contains(f, StringComparison.OrdinalIgnoreCase)))
+                            && !skipEntities.Contains(o.ShortName))
                 .ToList();
+            return entities;
+        }
 
-            var relationships = BuildRelationships(allTables, entities);
-
-            return new Universe { Entities = entities, Relationships = relationships };
+        private List<string> LoadCommaSeparatedValues(string values)
+        {
+            return values?.Split(',')
+                .Select(o => o.Trim())
+                .Where(o => !string.IsNullOrEmpty(o))
+                .ToList() ?? [];
         }
 
         private static bool IsPrimaryKey(SchemaTable table, SchemaTableColumn column, IEnumerable<SchemaTable> tables)
