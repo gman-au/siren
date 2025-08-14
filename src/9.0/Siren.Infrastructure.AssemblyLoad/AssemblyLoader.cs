@@ -20,18 +20,21 @@ namespace Siren.Infrastructure.AssemblyLoad
         private readonly IAssemblyMapper _assemblyMapper;
         private readonly ILogger<AssemblyLoader> _logger;
         private readonly IRelationshipBuilder _relationshipBuilder;
+        private readonly IUniverseFilter _universeFilter;
 
         public AssemblyLoader(
             ILogger<AssemblyLoader> logger,
             IEntityBuilder entityBuilder,
             IRelationshipBuilder relationshipBuilder,
-            IAssemblyMapper assemblyMapper
+            IAssemblyMapper assemblyMapper,
+            IUniverseFilter universeFilter
         )
         {
             _logger = logger;
             _entityBuilder = entityBuilder;
             _relationshipBuilder = relationshipBuilder;
             _assemblyMapper = assemblyMapper;
+            _universeFilter = universeFilter;
         }
 
         public bool IsApplicable(ProgramArguments arguments)
@@ -64,7 +67,7 @@ namespace Siren.Infrastructure.AssemblyLoad
                                 .Body.Instructions.Where(o => _entityBuilder.IsApplicable(o))
                                 .ToList();
 
-                            var entities = FilterEntities(
+                            var entities = _universeFilter.FilterEntities(
                                 entityInstructions.Select(o => _entityBuilder.Process(o)), arguments);
 
                             _logger.LogInformation("Extracted {EntitiesCount} entities", entities.Count);
@@ -90,29 +93,6 @@ namespace Siren.Infrastructure.AssemblyLoad
             }
 
             return null;
-        }
-
-        public List<ExtractedEntity> FilterEntities(IEnumerable<ExtractedEntity> extractedEntities,
-            ProgramArguments arguments)
-        {
-            var filterEntities = LoadCommaSeparatedValues(arguments.FilterEntities);
-            var skipEntities = LoadCommaSeparatedValues(arguments.SkipEntities);
-
-            var entities = extractedEntities
-                .Where(o => o != null &&
-                            (!filterEntities.Any() || filterEntities.Any(f =>
-                                o.EntityName.Contains(f, StringComparison.OrdinalIgnoreCase)))
-                            && !skipEntities.Contains(o.EntityName))
-                .ToList();
-            return entities;
-        }
-
-        private List<string> LoadCommaSeparatedValues(string values)
-        {
-            return values?.Split(',')
-                .Select(o => o.Trim())
-                .Where(o => !string.IsNullOrEmpty(o))
-                .ToList() ?? [];
         }
     }
 }

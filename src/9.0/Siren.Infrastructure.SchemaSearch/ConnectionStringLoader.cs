@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using SchemaSearch.Domain.Schema;
@@ -12,10 +11,12 @@ namespace Siren.Infrastructure.SchemaSearch
         private const string BaseTableType = "BASE TABLE";
 
         private readonly ISearchApplication _searchApplication;
+        private readonly IUniverseFilter _universeFilter;
 
-        public ConnectionStringLoader(ISearchApplication searchApplication)
+        public ConnectionStringLoader(ISearchApplication searchApplication, IUniverseFilter universeFilter)
         {
             _searchApplication = searchApplication;
+            _universeFilter = universeFilter;
         }
 
         public bool IsApplicable(ProgramArguments arguments)
@@ -45,34 +46,11 @@ namespace Siren.Infrastructure.SchemaSearch
                             IsUniqueKey = false,
                         }),
                 });
-            var filteredEntities = FilterEntities(entities, arguments);
+            var filteredEntities = _universeFilter.FilterEntities(entities, arguments);
 
             var relationships = BuildRelationships(allTables, filteredEntities);
 
             return new Universe { Entities = filteredEntities, Relationships = relationships };
-        }
-        
-        public List<Entity> FilterEntities(IEnumerable<Entity> extractedEntities,
-            ProgramArguments arguments)
-        {
-            var filterEntities = LoadCommaSeparatedValues(arguments.FilterEntities);
-            var skipEntities = LoadCommaSeparatedValues(arguments.SkipEntities);
-
-            var entities = extractedEntities
-                .Where(o => o != null &&
-                            (!filterEntities.Any() || filterEntities.Any(f =>
-                                o.ShortName.Contains(f, StringComparison.OrdinalIgnoreCase)))
-                            && !skipEntities.Contains(o.ShortName))
-                .ToList();
-            return entities;
-        }
-
-        private List<string> LoadCommaSeparatedValues(string values)
-        {
-            return values?.Split(',')
-                .Select(o => o.Trim())
-                .Where(o => !string.IsNullOrEmpty(o))
-                .ToList() ?? [];
         }
 
         private static bool IsPrimaryKey(SchemaTable table, SchemaTableColumn column, IEnumerable<SchemaTable> tables)

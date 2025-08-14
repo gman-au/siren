@@ -23,6 +23,7 @@ namespace Siren.Tool
                 .AddSingleton<ISirenApplication, SirenApplication>()
                 .AddSingleton<IUniverseLoader, AssemblyLoader>()
                 .AddSingleton<IUniverseLoader, ConnectionStringLoader>()
+                .AddSingleton<IUniverseFilter, UniverseFilter>()
                 .AddSingleton<IAssemblyMapper, AssemblyMapper>()
                 .AddSingleton<IFileWriter, FileWriter>()
                 .AddSingleton<IEntityBuilder, EntityBuilder>()

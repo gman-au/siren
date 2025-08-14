@@ -1,30 +1,15 @@
-using Microsoft.Extensions.Logging;
-using NSubstitute;
 using Siren.Domain;
-using Siren.Infrastructure.AssemblyLoad;
 using Siren.Infrastructure.AssemblyLoad.Builders;
-using Siren.Infrastructure.AssemblyLoad.Mapping;
 using Siren.Infrastructure.AssemblyLoad.Domain;
-using Siren.Infrastructure.SchemaSearch;
+using Siren.Interfaces;
 using Xunit;
 
 namespace Siren.Tests.Unit
 {
     public class LoaderTests
     {
-        private readonly AssemblyLoader _assemblyLoader;
-        private readonly ConnectionStringLoader _connectionStringLoader;
+        private readonly IUniverseFilter _sut = new UniverseFilter();
 
-        public LoaderTests()
-        {
-            var logger = Substitute.For<ILogger<AssemblyLoader>>();
-            var entityBuilder = Substitute.For<IEntityBuilder>();
-            var relationshipBuilder = Substitute.For<IRelationshipBuilder>();
-            var assemblyMapper = Substitute.For<IAssemblyMapper>();
-            var searchApplication = Substitute.For<ISearchApplication>();
-            _assemblyLoader = new AssemblyLoader(logger, entityBuilder, relationshipBuilder, assemblyMapper);
-            _connectionStringLoader = new ConnectionStringLoader(searchApplication);
-        }
 
         [Fact]
         public void Test_AssemblyFilterEntities_FiltersBySubstring()
@@ -44,9 +29,9 @@ namespace Siren.Tests.Unit
                 FilterEntities = "User,Group",
                 SkipEntities = null
             };
-            
+
             // Act
-            var result = _assemblyLoader.FilterEntities(entities, args);
+            var result = _sut.FilterEntities(entities, args);
 
             // Assert
             Assert.Contains(result, e => e.EntityName == "User");
@@ -72,10 +57,10 @@ namespace Siren.Tests.Unit
                 FilterEntities = null,
                 SkipEntities = "User,Role"
             };
-            
+
             // Act
-            var result = _assemblyLoader.FilterEntities(entities, args);
-            
+            var result = _sut.FilterEntities(entities, args);
+
             // Assert
             Assert.DoesNotContain(result, e => e.EntityName == "User");
             Assert.DoesNotContain(result, e => e.EntityName == "Role");
@@ -99,9 +84,9 @@ namespace Siren.Tests.Unit
                 FilterEntities = "User,Group",
                 SkipEntities = "UserGroup"
             };
-            
+
             // Act
-            var result = _assemblyLoader.FilterEntities(entities, args);
+            var result = _sut.FilterEntities(entities, args);
 
             // Assert
             Assert.Contains(result, e => e.EntityName == "User");
@@ -126,13 +111,13 @@ namespace Siren.Tests.Unit
                 SkipEntities = null
             };
 
-            var result = _assemblyLoader.FilterEntities(entities, args);
+            var result = _sut.FilterEntities(entities, args);
 
             Assert.Equal(2, result.Count);
             Assert.Contains(result, e => e.EntityName == "User");
             Assert.Contains(result, e => e.EntityName == "Group");
         }
-        
+
         [Fact]
         public void Test_ConnectionStringFilterEntities_FiltersBySubstring()
         {
@@ -151,9 +136,9 @@ namespace Siren.Tests.Unit
                 FilterEntities = "User,Group",
                 SkipEntities = null
             };
-            
+
             // Act
-            var result = _connectionStringLoader.FilterEntities(entities, args);
+            var result = _sut.FilterEntities(entities, args);
 
             // Assert
             Assert.Contains(result, e => e.ShortName == "User");
@@ -179,10 +164,10 @@ namespace Siren.Tests.Unit
                 FilterEntities = null,
                 SkipEntities = "User,Role"
             };
-            
+
             // Act
-            var result = _connectionStringLoader.FilterEntities(entities, args);
-            
+            var result = _sut.FilterEntities(entities, args);
+
             // Assert
             Assert.DoesNotContain(result, e => e.ShortName == "User");
             Assert.DoesNotContain(result, e => e.ShortName == "Role");
@@ -206,9 +191,9 @@ namespace Siren.Tests.Unit
                 FilterEntities = "User,Group",
                 SkipEntities = "UserGroup"
             };
-            
+
             // Act
-            var result = _connectionStringLoader.FilterEntities(entities, args);
+            var result = _sut.FilterEntities(entities, args);
 
             // Assert
             Assert.Contains(result, e => e.ShortName == "User");
@@ -233,7 +218,7 @@ namespace Siren.Tests.Unit
                 SkipEntities = null
             };
 
-            var result = _connectionStringLoader.FilterEntities(entities, args);
+            var result = _sut.FilterEntities(entities, args);
 
             Assert.Equal(2, result.Count);
             Assert.Contains(result, e => e.ShortName == "User");
