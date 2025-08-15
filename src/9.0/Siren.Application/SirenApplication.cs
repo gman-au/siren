@@ -15,16 +15,19 @@ namespace Siren.Application
         private readonly IDomainRenderer _domainRenderer;
         private readonly IFileWriter _fileWriter;
         private readonly ILogger<SirenApplication> _logger;
+        private readonly ParserResult<ProgramArguments> _parsedArguments;
         private readonly IEnumerable<IUniverseLoader> _universeLoaders;
 
         public SirenApplication(
             ILogger<SirenApplication> logger,
+            ParserResult<ProgramArguments> parsedArguments,
             IFileWriter fileWriter,
             IDomainRenderer domainRenderer,
             IEnumerable<IUniverseLoader> universeLoaders
         )
         {
             _logger = logger;
+            _parsedArguments = parsedArguments;
             _fileWriter = fileWriter;
             _domainRenderer = domainRenderer;
             _universeLoaders = universeLoaders;
@@ -41,7 +44,7 @@ namespace Siren.Application
                 if (parsedArguments.Errors.Any())
                     return -1;
 
-                var arguments = parsedArguments.Value;
+                var arguments = _parsedArguments.Value;
 
                 var outputPath = arguments.OutputFilePath;
                 var markdownAnchor = arguments.MarkdownAnchor;
@@ -69,7 +72,7 @@ namespace Siren.Application
             }
             catch (Exception ex)
             {
-                _logger.LogError($"Error encountered: {ex.Message}");
+                _logger.LogError("Error encountered: {ExMessage}", ex.Message);
 
                 return -2;
             }

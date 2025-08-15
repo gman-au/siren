@@ -3,7 +3,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Siren.Application;
 using Siren.Tool;
 
-var services = Startup.AddServices();
+var services = Startup.AddServices(args);
 
 var serviceProvider = services.BuildServiceProvider();
 

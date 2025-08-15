@@ -9,10 +9,14 @@ namespace Siren.Infrastructure.Rendering
 {
     public class MermaidRenderer : IDomainRenderer
     {
+        private readonly ProgramArguments _programArguments;
         private readonly ILogger<MermaidRenderer> _logger;
 
-        public MermaidRenderer(ILogger<MermaidRenderer> logger)
+        public MermaidRenderer(
+            ProgramArguments programArguments,
+            ILogger<MermaidRenderer> logger)
         {
+            _programArguments = programArguments;
             _logger = logger;
         }
 
@@ -26,10 +30,10 @@ namespace Siren.Infrastructure.Rendering
             result.AppendLine(MermaidConstants.SirenAnchorStart);
 
             // Mermaid header
-            result.AppendLine(MermaidConstants.MermaidAnchorStart);
+            result.AppendLine(_programArguments.MermaidAnchorStart ?? MermaidConstants.MermaidAnchorStart);
 
             // (optional) neutral theme
-            result.AppendLine($"\t{MermaidConstants.MermaidNeutralThemeLine}");
+            result.AppendLine($"\t{_programArguments.MermaidThemeLine ?? MermaidConstants.MermaidNeutralThemeLine}");
 
             // Header
             result.AppendLine($"\t{MermaidConstants.MermaidErDiagramHeader}");
@@ -62,7 +66,7 @@ namespace Siren.Infrastructure.Rendering
 
                     result.AppendLine();
 
-                    _logger.LogInformation($"Rendered entity: {entity.ShortName}");
+                    _logger.LogInformation("Rendered entity: {EntityShortName}", entity.ShortName);
                 }
 
                 // Entity footer
@@ -73,15 +77,15 @@ namespace Siren.Infrastructure.Rendering
             {
                 result.AppendLine(
                     $"{relationship.Source?.ShortName}"
-                        + $"{MapCardinalityToString(relationship.SourceCardinality, true)}--"
-                        + $"{MapCardinalityToString(relationship.TargetCardinality, false)}"
-                        + $"{relationship.Target?.ShortName} "
-                        + ": \"\""
+                    + $"{MapCardinalityToString(relationship.SourceCardinality, true)}--"
+                    + $"{MapCardinalityToString(relationship.TargetCardinality, false)}"
+                    + $"{relationship.Target?.ShortName} "
+                    + ": \"\""
                 );
             }
 
             // Mermaid footer
-            result.AppendLine(MermaidConstants.MermaidAnchorEnd);
+            result.AppendLine(_programArguments.MermaidAnchorEnd ??MermaidConstants.MermaidAnchorEnd);
 
             // Text in file replace footer
             result.AppendLine(MermaidConstants.SirenAnchorEnd);

@@ -1,6 +1,8 @@
+using CommandLine;
 using Microsoft.Extensions.Logging;
 using NSubstitute;
 using Siren.Application;
+using Siren.Domain;
 using Siren.Infrastructure.Io;
 using Siren.Infrastructure.Rendering;
 using Siren.Interfaces;
@@ -46,21 +48,9 @@ namespace Siren.Tests.Unit
 
         private class TestContext
         {
-            private readonly SirenApplication _sut;
+            private SirenApplication _sut;
             private string[] _args;
             private int _exitCode;
-
-            public TestContext()
-            {
-                var universeLoader = Substitute.For<IUniverseLoader>();
-                var domainRenderer = Substitute.For<IDomainRenderer>();
-                var fileWriter = Substitute.For<IFileWriter>();
-                var logger = Substitute.For<ILogger<SirenApplication>>();
-
-                universeLoader.IsApplicable(null).ReturnsForAnyArgs(true);
-
-                _sut = new SirenApplication(logger, fileWriter, domainRenderer, new[] { universeLoader });
-            }
 
             public void ArrangeAssemblyPathArguments()
             {
@@ -100,6 +90,18 @@ namespace Siren.Tests.Unit
 
             public void ActRunApplication()
             {
+                // Arrange
+                var universeLoader = Substitute.For<IUniverseLoader>();
+                var domainRenderer = Substitute.For<IDomainRenderer>();
+                var fileWriter = Substitute.For<IFileWriter>();
+                var logger = Substitute.For<ILogger<SirenApplication>>();
+                
+                universeLoader.IsApplicable(null).ReturnsForAnyArgs(true);
+                var parsedArguments = Parser.Default.ParseArguments<ProgramArguments>(_args);
+                
+                _sut = new SirenApplication(logger, parsedArguments, fileWriter, domainRenderer, [universeLoader]);
+                
+                // Act
                 _exitCode = _sut.Perform(_args);
             }
 

@@ -1,6 +1,10 @@
+using System;
+using System.Linq;
+using CommandLine;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Siren.Application;
+using Siren.Domain;
 using Siren.Infrastructure.AssemblyLoad;
 using Siren.Infrastructure.AssemblyLoad.Builders;
 using Siren.Infrastructure.AssemblyLoad.Configuration;
@@ -14,8 +18,15 @@ namespace Siren.Tool
 {
     public static class Startup
     {
-        public static IServiceCollection AddServices()
+        public static IServiceCollection AddServices(string[] args)
         {
+            
+            var parsedArguments = Parser.Default.ParseArguments<ProgramArguments>(args);
+
+            if (parsedArguments.Errors.Any())
+                throw new ArgumentException("Invalid command line arguments provided.");
+            var arguments = parsedArguments.Value;
+            
             var services = new ServiceCollection();
 
             services
@@ -32,7 +43,9 @@ namespace Siren.Tool
                 .AddSingleton<IKeyBuilder, KeyBuilder>()
                 .AddSingleton<IRelationshipFilter, RelationshipFilter>()
                 .AddSingleton<ISearchApplication, SearchApplication>()
-                .AddSingleton<IDomainRenderer, MermaidRenderer>();
+                .AddSingleton<IDomainRenderer, MermaidRenderer>()
+                .AddSingleton(parsedArguments)
+                .AddSingleton(arguments);
 
             services.AddLogging(o => o.AddConsole());
 
