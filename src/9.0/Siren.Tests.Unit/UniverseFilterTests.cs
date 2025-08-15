@@ -1,6 +1,6 @@
 using System.Linq;
+using Siren.Application;
 using Siren.Domain;
-using Siren.Infrastructure.AssemblyLoad.Builders;
 using Siren.Interfaces;
 using Xunit;
 
