@@ -4,7 +4,7 @@ using System.Linq;
 using Siren.Domain;
 using Siren.Interfaces;
 
-namespace Siren.Infrastructure.AssemblyLoad.Builders;
+namespace Siren.Application;
 
 public class UniverseFilter : IUniverseFilter
 {
