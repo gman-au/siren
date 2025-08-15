@@ -43,8 +43,7 @@ namespace Siren.Infrastructure.SchemaSearch
                             IsForeignKey = IsForeignKey(t, c, allTables),
                             IsUniqueKey = false,
                         }),
-                })
-                .ToList();
+                }).ToList();
 
             var relationships = BuildRelationships(allTables, entities);
 
