@@ -11,12 +11,10 @@ namespace Siren.Infrastructure.SchemaSearch
         private const string BaseTableType = "BASE TABLE";
 
         private readonly ISearchApplication _searchApplication;
-        private readonly IUniverseFilter _universeFilter;
 
-        public ConnectionStringLoader(ISearchApplication searchApplication, IUniverseFilter universeFilter)
+        public ConnectionStringLoader(ISearchApplication searchApplication)
         {
             _searchApplication = searchApplication;
-            _universeFilter = universeFilter;
         }
 
         public bool IsApplicable(ProgramArguments arguments)
@@ -45,12 +43,11 @@ namespace Siren.Infrastructure.SchemaSearch
                             IsForeignKey = IsForeignKey(t, c, allTables),
                             IsUniqueKey = false,
                         }),
-                });
-            var filteredEntities = _universeFilter.FilterEntities(entities, arguments);
+                }).ToList();
 
-            var relationships = BuildRelationships(allTables, filteredEntities);
+            var relationships = BuildRelationships(allTables, entities);
 
-            return new Universe { Entities = filteredEntities, Relationships = relationships };
+            return new Universe { Entities = entities, Relationships = relationships };
         }
 
         private static bool IsPrimaryKey(SchemaTable table, SchemaTableColumn column, IEnumerable<SchemaTable> tables)

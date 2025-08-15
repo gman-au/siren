@@ -16,18 +16,21 @@ namespace Siren.Application
         private readonly IFileWriter _fileWriter;
         private readonly ILogger<SirenApplication> _logger;
         private readonly IEnumerable<IUniverseLoader> _universeLoaders;
+        private readonly IUniverseFilter _universeFilter;
 
         public SirenApplication(
             ILogger<SirenApplication> logger,
             IFileWriter fileWriter,
             IDomainRenderer domainRenderer,
-            IEnumerable<IUniverseLoader> universeLoaders
+            IEnumerable<IUniverseLoader> universeLoaders,
+            IUniverseFilter universeFilter
         )
         {
             _logger = logger;
             _fileWriter = fileWriter;
             _domainRenderer = domainRenderer;
             _universeLoaders = universeLoaders;
+            _universeFilter = universeFilter;
         }
 
         public int Perform(string[] args)
@@ -60,8 +63,9 @@ namespace Siren.Application
                     );
 
                 var universe = universeLoader.Perform(arguments);
+                var filteredUniverse = _universeFilter.FilterEntities(universe, arguments);
 
-                var result = _domainRenderer.Perform(universe);
+                var result = _domainRenderer.Perform(filteredUniverse);
 
                 _fileWriter.Perform(outputPath, result, markdownAnchor);
 

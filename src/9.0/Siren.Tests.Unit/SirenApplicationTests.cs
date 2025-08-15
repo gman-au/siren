@@ -52,6 +52,7 @@ namespace Siren.Tests.Unit
 
             public TestContext()
             {
+                var universeFilter = Substitute.For<IUniverseFilter>();
                 var universeLoader = Substitute.For<IUniverseLoader>();
                 var domainRenderer = Substitute.For<IDomainRenderer>();
                 var fileWriter = Substitute.For<IFileWriter>();
@@ -59,7 +60,7 @@ namespace Siren.Tests.Unit
 
                 universeLoader.IsApplicable(null).ReturnsForAnyArgs(true);
 
-                _sut = new SirenApplication(logger, fileWriter, domainRenderer, new[] { universeLoader });
+                _sut = new SirenApplication(logger, fileWriter, domainRenderer, new[] { universeLoader }, universeFilter);
             }
 
             public void ArrangeAssemblyPathArguments()

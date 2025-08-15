@@ -1,8 +1,8 @@
-using System.Collections.Generic;
+using Siren.Domain;
 
 namespace Siren.Interfaces;
 
 public interface IUniverseFilter
 {
-    List<T> FilterEntities<T>(IEnumerable<T> extractedEntities, Domain.ProgramArguments arguments);
+    Universe FilterEntities(Universe universe, ProgramArguments arguments);
 }

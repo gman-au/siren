@@ -1,5 +1,3 @@
-using System;
-using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Extensions.Logging;
 using Mono.Cecil;
@@ -20,21 +18,18 @@ namespace Siren.Infrastructure.AssemblyLoad
         private readonly IAssemblyMapper _assemblyMapper;
         private readonly ILogger<AssemblyLoader> _logger;
         private readonly IRelationshipBuilder _relationshipBuilder;
-        private readonly IUniverseFilter _universeFilter;
 
         public AssemblyLoader(
             ILogger<AssemblyLoader> logger,
             IEntityBuilder entityBuilder,
             IRelationshipBuilder relationshipBuilder,
-            IAssemblyMapper assemblyMapper,
-            IUniverseFilter universeFilter
+            IAssemblyMapper assemblyMapper
         )
         {
             _logger = logger;
             _entityBuilder = entityBuilder;
             _relationshipBuilder = relationshipBuilder;
             _assemblyMapper = assemblyMapper;
-            _universeFilter = universeFilter;
         }
 
         public bool IsApplicable(ProgramArguments arguments)
@@ -67,8 +62,10 @@ namespace Siren.Infrastructure.AssemblyLoad
                                 .Body.Instructions.Where(o => _entityBuilder.IsApplicable(o))
                                 .ToList();
 
-                            var entities = _universeFilter.FilterEntities(
-                                entityInstructions.Select(o => _entityBuilder.Process(o)), arguments);
+                            var entities = entityInstructions
+                                .Select(o => _entityBuilder.Process(o))
+                                .Where(o => o != null)
+                                .ToList();
 
                             _logger.LogInformation("Extracted {EntitiesCount} entities", entities.Count);
 
