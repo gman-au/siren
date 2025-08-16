@@ -1,18 +1,19 @@
 using System.Linq;
 using Siren.Application;
 using Siren.Domain;
-using Siren.Interfaces;
+using Siren.Tool;
 using Xunit;
 
 namespace Siren.Tests.Unit
 {
     public class UniverseFilterTests
     {
-        private readonly IUniverseFilter _sut = new UniverseFilter();
-        
         [Fact]
         public void Test_FilterEntities_FiltersBySubstring()
         {
+            // Arrange
+            var programArguments = new ProgramArguments { FilterEntities = "User,Group" };
+            var sut = new UniverseFilter(programArguments);
             var universe = new Universe
             {
                 Entities =
@@ -24,15 +25,9 @@ namespace Siren.Tests.Unit
                     new Entity { ShortName = "Permission" }
                 ]
             };
-
-            var args = new ProgramArguments
-            {
-                FilterEntities = "User,Group",
-                SkipEntities = null
-            };
-
-            var result = _sut.FilterEntities(universe, args);
-
+            // Act
+            var result = sut.FilterEntities(universe);
+            // Assert
             Assert.Contains(result.Entities, e => e.ShortName == "User");
             Assert.Contains(result.Entities, e => e.ShortName == "Group");
             Assert.Contains(result.Entities, e => e.ShortName == "UserGroup");
@@ -44,6 +39,9 @@ namespace Siren.Tests.Unit
         [Fact]
         public void Test_FilterEntities_SkipEntities()
         {
+            // Arrange
+            var programArguments = new ProgramArguments { SkipEntities = "User,Role" };
+            var sut = new UniverseFilter(programArguments);
             var universe = new Universe
             {
                 Entities =
@@ -53,14 +51,9 @@ namespace Siren.Tests.Unit
                     new Entity { ShortName = "Role" }
                 ]
             };
-            var args = new ProgramArguments
-            {
-                FilterEntities = null,
-                SkipEntities = "User,Role"
-            };
-
-            var result = _sut.FilterEntities(universe, args);
-
+            // Act
+            var result = sut.FilterEntities(universe);
+            // Assert
             Assert.DoesNotContain(result.Entities, e => e.ShortName == "User");
             Assert.DoesNotContain(result.Entities, e => e.ShortName == "Role");
             Assert.Contains(result.Entities, e => e.ShortName == "Group");
@@ -70,6 +63,9 @@ namespace Siren.Tests.Unit
         [Fact]
         public void Test_FilterEntities_FilterAndSkipCombined()
         {
+            // Arrange
+            var programArguments = new ProgramArguments { FilterEntities = "User,Group", SkipEntities = "UserGroup" };
+            var sut = new UniverseFilter(programArguments);
             var universe = new Universe
             {
                 Entities =
@@ -80,14 +76,9 @@ namespace Siren.Tests.Unit
                     new Entity { ShortName = "Role" }
                 ]
             };
-            var args = new ProgramArguments
-            {
-                FilterEntities = "User,Group",
-                SkipEntities = "UserGroup"
-            };
-
-            var result = _sut.FilterEntities(universe, args);
-
+            // Act
+            var result = sut.FilterEntities(universe);
+            // Assert
             Assert.Contains(result.Entities, e => e.ShortName == "User");
             Assert.Contains(result.Entities, e => e.ShortName == "Group");
             Assert.DoesNotContain(result.Entities, e => e.ShortName == "UserGroup");
@@ -98,6 +89,9 @@ namespace Siren.Tests.Unit
         [Fact]
         public void Test_FilterEntities_NoFiltersReturnsAll()
         {
+            // Arrange
+            var programArguments = new ProgramArguments();
+            var sut = new UniverseFilter(programArguments);
             var universe = new Universe
             {
                 Entities =
@@ -106,15 +100,9 @@ namespace Siren.Tests.Unit
                     new Entity { ShortName = "Group" }
                 ]
             };
-
-            var args = new ProgramArguments
-            {
-                FilterEntities = null,
-                SkipEntities = null
-            };
-
-            var result = _sut.FilterEntities(universe, args);
-
+            // Act
+            var result = sut.FilterEntities(universe);
+            // Assert
             Assert.Equal(2, result.Entities.Count());
             Assert.Contains(result.Entities, e => e.ShortName == "User");
             Assert.Contains(result.Entities, e => e.ShortName == "Group");
@@ -123,10 +111,12 @@ namespace Siren.Tests.Unit
         [Fact]
         public void Test_FilterEntities_FiltersRelationshipsByEntities()
         {
+            // Arrange
+            var programArguments = new ProgramArguments { FilterEntities = "User,Group" };
+            var sut = new UniverseFilter(programArguments);
             var user = new Entity { ShortName = "User" };
             var group = new Entity { ShortName = "Group" };
             var role = new Entity { ShortName = "Role" };
-
             var universe = new Universe
             {
                 Entities = [user, group, role],
@@ -137,29 +127,26 @@ namespace Siren.Tests.Unit
                     new Relationship { Source = user, Target = role }
                 ]
             };
-
-            var args = new ProgramArguments
-            {
-                FilterEntities = "User,Group",
-                SkipEntities = null
-            };
-
-            var result = _sut.FilterEntities(universe, args);
-
-            // Only relationships where both Source and Target are in filtered entities
+            // Act
+            var result = sut.FilterEntities(universe);
+            // Assert
             Assert.Contains(result.Relationships, r => r.Source.ShortName == "User" && r.Target.ShortName == "Group");
-            Assert.DoesNotContain(result.Relationships, r => r.Source.ShortName == "group" && r.Target.ShortName == "Role");
-            Assert.DoesNotContain(result.Relationships, r => r.Source.ShortName == "User" && r.Target.ShortName == "Role");
+            Assert.DoesNotContain(result.Relationships,
+                r => r.Source.ShortName == "group" && r.Target.ShortName == "Role");
+            Assert.DoesNotContain(result.Relationships,
+                r => r.Source.ShortName == "User" && r.Target.ShortName == "Role");
             Assert.Single(result.Relationships);
         }
 
         [Fact]
         public void Test_FilterEntities_RemovesRelationshipsWithSkippedEntities()
         {
+            // Arrange
+            var programArguments = new ProgramArguments { SkipEntities = "Role" };
+            var sut = new UniverseFilter(programArguments);
             var user = new Entity { ShortName = "User" };
             var group = new Entity { ShortName = "Group" };
             var role = new Entity { ShortName = "Role" };
-
             var universe = new Universe
             {
                 Entities = [user, group, role],
@@ -170,28 +157,25 @@ namespace Siren.Tests.Unit
                     new Relationship { Source = user, Target = role }
                 ]
             };
-
-            var args = new ProgramArguments
-            {
-                FilterEntities = null,
-                SkipEntities = "Role"
-            };
-
-            var result = _sut.FilterEntities(universe, args);
-
-            // Relationships with Role as Source or Target should be removed
+            // Act
+            var result = sut.FilterEntities(universe);
+            // Assert
             Assert.Contains(result.Relationships, r => r.Source.ShortName == "User" && r.Target.ShortName == "Group");
-            Assert.DoesNotContain(result.Relationships, r => r.Source.ShortName == "Group" && r.Target.ShortName == "Role");
-            Assert.DoesNotContain(result.Relationships, r => r.Source.ShortName == "User" && r.Target.ShortName == "Role");
+            Assert.DoesNotContain(result.Relationships,
+                r => r.Source.ShortName == "Group" && r.Target.ShortName == "Role");
+            Assert.DoesNotContain(result.Relationships,
+                r => r.Source.ShortName == "User" && r.Target.ShortName == "Role");
             Assert.Single(result.Relationships);
         }
 
         [Fact]
         public void Test_FilterEntities_NoEntitiesMeansNoRelationships()
         {
+            // Arrange
+            var programArguments = new ProgramArguments { FilterEntities = "NonExistent" };
+            var sut = new UniverseFilter(programArguments);
             var user = new Entity { ShortName = "User" };
             var group = new Entity { ShortName = "Group" };
-
             var universe = new Universe
             {
                 Entities = [user, group],
@@ -200,15 +184,9 @@ namespace Siren.Tests.Unit
                     new Relationship { Source = user, Target = group }
                 ]
             };
-
-            var args = new ProgramArguments
-            {
-                FilterEntities = "NonExistent",
-                SkipEntities = null
-            };
-
-            var result = _sut.FilterEntities(universe, args);
-
+            // Act
+            var result = sut.FilterEntities(universe);
+            // Assert
             Assert.Empty(result.Entities);
             Assert.Empty(result.Relationships);
         }
