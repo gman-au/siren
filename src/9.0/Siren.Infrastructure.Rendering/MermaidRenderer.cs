@@ -30,7 +30,7 @@ namespace Siren.Infrastructure.Rendering
             result.AppendLine(MermaidConstants.SirenAnchorStart);
 
             // Mermaid header
-            result.AppendLine(_programArguments.MermaidAnchorStart ?? MermaidConstants.MermaidAnchorStart);
+            result.AppendLine(_programArguments.MermaidBlockBegin ?? MermaidConstants.MermaidBlockBegin);
 
             // Header
             result.AppendLine($"\t{MermaidConstants.MermaidErDiagramHeader}");
@@ -85,7 +85,7 @@ namespace Siren.Infrastructure.Rendering
             }
 
             // Mermaid footer
-            result.AppendLine(_programArguments.MermaidAnchorEnd ??MermaidConstants.MermaidAnchorEnd);
+            result.AppendLine(_programArguments.MermaidBlockEnd ??MermaidConstants.MermaidBlockEnd);
 
             // Text in file replace footer
             result.AppendLine(MermaidConstants.SirenAnchorEnd);
