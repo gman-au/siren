@@ -32,11 +32,11 @@ namespace Siren.Infrastructure.Rendering
             // Mermaid header
             result.AppendLine(_programArguments.MermaidAnchorStart ?? MermaidConstants.MermaidAnchorStart);
 
-            // (optional) neutral theme
-            result.AppendLine($"\t{_programArguments.MermaidThemeLine ?? MermaidConstants.MermaidNeutralThemeLine}");
-
             // Header
             result.AppendLine($"\t{MermaidConstants.MermaidErDiagramHeader}");
+            
+            // (optional) neutral theme
+            result.AppendLine($"\t{_programArguments.MermaidThemeLine ?? MermaidConstants.MermaidNeutralThemeLine}");
 
             _logger.LogInformation("Rendered header");
 
