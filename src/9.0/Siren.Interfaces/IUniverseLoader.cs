@@ -4,8 +4,8 @@ namespace Siren.Interfaces
 {
     public interface IUniverseLoader
     {
-        bool IsApplicable(ProgramArguments arguments);
+        bool IsApplicable(IProgramArguments arguments);
 
-        Universe Perform(ProgramArguments arguments);
+        Universe Perform(IProgramArguments arguments);
     }
 }

@@ -8,7 +8,7 @@ namespace Siren.Application;
 
 public class UniverseFilter : IUniverseFilter
 {
-    public Universe FilterEntities(Universe universe, ProgramArguments arguments)
+    public Universe FilterEntities(Universe universe, IProgramArguments arguments)
     {
         if (arguments.FilterEntities == null && arguments.SkipEntities == null)
             return universe;

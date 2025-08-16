@@ -1,3 +1,6 @@
+using System;
+using System.Linq;
+using CommandLine;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Siren.Application;
@@ -33,11 +36,32 @@ namespace Siren.Tool
                 .AddSingleton<IKeyBuilder, KeyBuilder>()
                 .AddSingleton<IRelationshipFilter, RelationshipFilter>()
                 .AddSingleton<ISearchApplication, SearchApplication>()
-                .AddSingleton<IDomainRenderer, MermaidRenderer>();
+                .AddSingleton<IDomainRenderer, MermaidRenderer>()
+                .AddSingleton(AddProgramArgumentsFactory());
 
             services.AddLogging(o => o.AddConsole());
 
             return services;
+        }
+
+        private static Func<string[], IProgramArguments> AddProgramArgumentsFactory()
+        {
+            return
+                args =>
+                {
+                    var parsedArguments =
+                        Parser
+                            .Default
+                            .ParseArguments<ProgramArguments>(args);
+
+                    var arguments = parsedArguments?.Value ?? new ProgramArguments();
+
+                    arguments.Errors =
+                        (parsedArguments?.Errors ?? [])
+                        .Select(o => o.ToString());
+
+                    return arguments;
+                };
         }
     }
 }

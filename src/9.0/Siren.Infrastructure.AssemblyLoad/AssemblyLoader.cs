@@ -32,12 +32,12 @@ namespace Siren.Infrastructure.AssemblyLoad
             _assemblyMapper = assemblyMapper;
         }
 
-        public bool IsApplicable(ProgramArguments arguments)
+        public bool IsApplicable(IProgramArguments arguments)
         {
             return !string.IsNullOrEmpty(arguments?.TestAssemblyPath);
         }
 
-        public Universe Perform(ProgramArguments arguments)
+        public Universe Perform(IProgramArguments arguments)
         {
             var filePath = arguments.TestAssemblyPath;
 

@@ -1,9 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using CommandLine;
 using Microsoft.Extensions.Logging;
-using Siren.Domain;
 using Siren.Infrastructure.Io;
 using Siren.Infrastructure.Rendering;
 using Siren.Interfaces;
@@ -17,13 +15,15 @@ namespace Siren.Application
         private readonly ILogger<SirenApplication> _logger;
         private readonly IEnumerable<IUniverseLoader> _universeLoaders;
         private readonly IUniverseFilter _universeFilter;
+        private readonly Func<string[], IProgramArguments> _argsFunc;
 
         public SirenApplication(
             ILogger<SirenApplication> logger,
             IFileWriter fileWriter,
             IDomainRenderer domainRenderer,
             IEnumerable<IUniverseLoader> universeLoaders,
-            IUniverseFilter universeFilter
+            IUniverseFilter universeFilter,
+            Func<string[], IProgramArguments> argsFunc
         )
         {
             _logger = logger;
@@ -31,6 +31,7 @@ namespace Siren.Application
             _domainRenderer = domainRenderer;
             _universeLoaders = universeLoaders;
             _universeFilter = universeFilter;
+            _argsFunc = argsFunc;
         }
 
         public int Perform(string[] args)
@@ -39,12 +40,10 @@ namespace Siren.Application
             {
                 _logger.LogInformation("Starting Siren console...");
 
-                var parsedArguments = Parser.Default.ParseArguments<ProgramArguments>(args);
+                var arguments = _argsFunc(args);
 
-                if (parsedArguments.Errors.Any())
+                if ((arguments.Errors ?? []).Any())
                     return -1;
-
-                var arguments = parsedArguments.Value;
 
                 var outputPath = arguments.OutputFilePath;
                 var markdownAnchor = arguments.MarkdownAnchor;

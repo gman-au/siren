@@ -17,12 +17,12 @@ namespace Siren.Infrastructure.SchemaSearch
             _searchApplication = searchApplication;
         }
 
-        public bool IsApplicable(ProgramArguments arguments)
+        public bool IsApplicable(IProgramArguments arguments)
         {
             return !string.IsNullOrEmpty(arguments?.ConnectionString);
         }
 
-        public Universe Perform(ProgramArguments arguments)
+        public Universe Perform(IProgramArguments arguments)
         {
             var searchResults = _searchApplication.PerformAsync(arguments.ConnectionString).Result;
 

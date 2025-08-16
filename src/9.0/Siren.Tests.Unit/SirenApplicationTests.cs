@@ -1,3 +1,5 @@
+using System;
+using CommandLine;
 using Microsoft.Extensions.Logging;
 using NSubstitute;
 using Siren.Application;
@@ -49,6 +51,7 @@ namespace Siren.Tests.Unit
             private readonly SirenApplication _sut;
             private string[] _args;
             private int _exitCode;
+            private readonly Func<string[], IProgramArguments> _argsFunc;
 
             public TestContext()
             {
@@ -57,46 +60,83 @@ namespace Siren.Tests.Unit
                 var domainRenderer = Substitute.For<IDomainRenderer>();
                 var fileWriter = Substitute.For<IFileWriter>();
                 var logger = Substitute.For<ILogger<SirenApplication>>();
+                _argsFunc = Substitute.For<Func<string[], IProgramArguments>>();
 
                 universeLoader.IsApplicable(null).ReturnsForAnyArgs(true);
 
-                _sut = new SirenApplication(logger, fileWriter, domainRenderer, new[] { universeLoader }, universeFilter);
+                _sut =
+                    new SirenApplication(
+                        logger,
+                        fileWriter,
+                        domainRenderer,
+                        [universeLoader],
+                        universeFilter,
+                        _argsFunc
+                    );
             }
 
             public void ArrangeAssemblyPathArguments()
             {
-                _args = new[]
-                {
-                    "-a",
-                    "C:\\test_path\\test_assembly.dll",
-                    "--outputPath",
-                    "C:\\test_path\\output_file.md",
-                };
+                _argsFunc(null)
+                    .ReturnsForAnyArgs(
+                        new ProgramArguments
+                        {
+                            TestAssemblyPath = "C:\\test_path\\test_assembly.dll",
+                            OutputFilePath = "C:\\test_path\\output_file.md",
+                            MarkdownAnchor = null,
+                            ConnectionString = null,
+                            FilterEntities = null,
+                            SkipEntities = null,
+                            Errors = null
+                        });
             }
 
             public void ArrangeMissingOutputArgument()
             {
-                _args = new[] { "-a", "C:\\test_path\\test_assembly.dll", "--markdownAnchor", "### HEADER" };
+                _argsFunc(null)
+                    .ReturnsForAnyArgs(
+                        new ProgramArguments
+                        {
+                            TestAssemblyPath = "C:\\test_path\\test_assembly.dll",
+                            OutputFilePath = null,
+                            MarkdownAnchor = "### HEADER",
+                            ConnectionString = null,
+                            FilterEntities = null,
+                            SkipEntities = null,
+                            Errors = ["Missing output file path"]
+                        });
             }
 
             public void ArrangeConnectionStringArguments()
             {
-                _args = new[] { "-c", "db//my-connection-string", "--outputPath", "C:\\test_path\\output_file.md" };
+                _argsFunc(null)
+                    .ReturnsForAnyArgs(
+                        new ProgramArguments
+                        {
+                            TestAssemblyPath = null,
+                            OutputFilePath = "C:\\test_path\\output_file.md",
+                            MarkdownAnchor = null,
+                            ConnectionString = "db//my-connection-string",
+                            FilterEntities = null,
+                            SkipEntities = null,
+                            Errors = null
+                        });
             }
 
             public void ArrangeAllArguments()
             {
-                _args = new[]
-                {
-                    "-a",
-                    "C:\\test_path\\test_assembly.dll",
-                    "-c",
-                    "db//my-connection-string",
-                    "--outputPath",
-                    "C:\\test_path\\output_file.md",
-                    "--markdownAnchor",
-                    "### HEADER",
-                };
+                _argsFunc(null)
+                    .ReturnsForAnyArgs(
+                        new ProgramArguments
+                        {
+                            TestAssemblyPath = "C:\\test_path\\test_assembly.dll",
+                            OutputFilePath = "C:\\test_path\\output_file.md",
+                            MarkdownAnchor = "### HEADER",
+                            ConnectionString = "db//my-connection-string",
+                            FilterEntities = null,
+                            SkipEntities = null,
+                            Errors = null
+                        });
             }
 
             public void ActRunApplication()

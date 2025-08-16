@@ -1,8 +1,10 @@
+using System.Collections.Generic;
 using CommandLine;
+using Siren.Interfaces;
 
-namespace Siren.Domain
+namespace Siren.Application
 {
-    public class ProgramArguments
+    public class ProgramArguments : IProgramArguments
     {
         [Option('a', "assemblyPath", Required = false, HelpText = "Migration assembly file path.")]
         public string TestAssemblyPath { get; set; }
@@ -23,6 +25,8 @@ namespace Siren.Domain
         
         [Option('s', "skipEntities", Required = false, HelpText = "Comma-separated list of entities to skip.")]
         public string SkipEntities { get; set; }
+
+        public IEnumerable<string> Errors { get; set; }
 
         public override string ToString()
         {
