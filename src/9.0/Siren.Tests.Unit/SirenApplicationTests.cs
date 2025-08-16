@@ -1,5 +1,4 @@
 using System;
-using CommandLine;
 using Microsoft.Extensions.Logging;
 using NSubstitute;
 using Siren.Application;
