@@ -35,7 +35,7 @@ namespace Siren.Infrastructure.Rendering
 
             // Header
             result.AppendLine($"\t{MermaidConstants.MermaidErDiagramHeader}");
-            
+
             // (optional) neutral theme
             result.AppendLine($"\t{_programArguments.MermaidThemeLine ?? MermaidConstants.MermaidNeutralThemeLine}");
 
@@ -86,7 +86,7 @@ namespace Siren.Infrastructure.Rendering
             }
 
             // Mermaid footer
-            result.AppendLine(_programArguments.MermaidBlockEnd ??MermaidConstants.MermaidBlockEnd);
+            result.AppendLine(_programArguments.MermaidBlockEnd ?? MermaidConstants.MermaidBlockEnd);
 
             // Text in file replace footer
             result.AppendLine(MermaidConstants.SirenAnchorEnd);

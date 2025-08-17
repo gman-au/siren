@@ -18,15 +18,8 @@ namespace Siren.Tool
 {
     public static class Startup
     {
-        public static IServiceCollection AddServices(string[] args)
+        public static IServiceCollection AddServices()
         {
-            
-            var parsedArguments = Parser.Default.ParseArguments<ProgramArguments>(args);
-
-            if (parsedArguments.Errors.Any())
-                throw new ArgumentException("Invalid command line arguments provided.");
-            var arguments = parsedArguments.Value;
-            
             var services = new ServiceCollection();
 
             services
@@ -45,9 +38,7 @@ namespace Siren.Tool
                 .AddSingleton<IKeyBuilder, KeyBuilder>()
                 .AddSingleton<IRelationshipFilter, RelationshipFilter>()
                 .AddSingleton<ISearchApplication, SearchApplication>()
-                .AddSingleton<IDomainRenderer, MermaidRenderer>()
-                .AddSingleton(parsedArguments)
-                .AddSingleton(arguments);
+                .AddSingleton<IDomainRenderer, MermaidRenderer>();
 
             services.AddLogging(o => o.AddConsole());
 

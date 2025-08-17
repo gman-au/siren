@@ -48,7 +48,7 @@ namespace Siren.Tests.Unit
 
         private class TestContext
         {
-            private SirenApplication _sut;
+            private readonly SirenApplication _sut;
             private string[] _args;
             private int _exitCode;
 
