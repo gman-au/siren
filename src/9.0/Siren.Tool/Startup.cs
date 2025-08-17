@@ -30,10 +30,12 @@ namespace Siren.Tool
             var services = new ServiceCollection();
 
             services
+                .AddSingleton<IProgramArguments, ProgramArguments>()
                 .AddSingleton<IBuildConfigurationProvider, BuildConfigurationProvider>()
                 .AddSingleton<ISirenApplication, SirenApplication>()
                 .AddSingleton<IUniverseLoader, AssemblyLoader>()
                 .AddSingleton<IUniverseLoader, ConnectionStringLoader>()
+                .AddSingleton<IUniverseFilter, UniverseFilter>()
                 .AddSingleton<IAssemblyMapper, AssemblyMapper>()
                 .AddSingleton<IFileWriter, FileWriter>()
                 .AddSingleton<IEntityBuilder, EntityBuilder>()

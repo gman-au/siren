@@ -11,20 +11,22 @@ namespace Siren.Infrastructure.SchemaSearch
         private const string BaseTableType = "BASE TABLE";
 
         private readonly ISearchApplication _searchApplication;
+        private readonly IProgramArguments _programArguments;
 
-        public ConnectionStringLoader(ISearchApplication searchApplication)
+        public ConnectionStringLoader(ISearchApplication searchApplication, IProgramArguments programArguments)
         {
             _searchApplication = searchApplication;
+            _programArguments = programArguments;
         }
 
-        public bool IsApplicable(ProgramArguments arguments)
+        public bool IsApplicable()
         {
-            return !string.IsNullOrEmpty(arguments?.ConnectionString);
+            return !string.IsNullOrEmpty(_programArguments?.ConnectionString);
         }
 
-        public Universe Perform(ProgramArguments arguments)
+        public Universe Perform()
         {
-            var searchResults = _searchApplication.PerformAsync(arguments.ConnectionString).Result;
+            var searchResults = _searchApplication.PerformAsync(_programArguments.ConnectionString).Result;
 
             var allTables = searchResults.Where(o => o.TableType == BaseTableType).ToList();
 
@@ -43,8 +45,7 @@ namespace Siren.Infrastructure.SchemaSearch
                             IsForeignKey = IsForeignKey(t, c, allTables),
                             IsUniqueKey = false,
                         }),
-                })
-                .ToList();
+                }).ToList();
 
             var relationships = BuildRelationships(allTables, entities);
 

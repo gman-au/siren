@@ -52,6 +52,20 @@ namespace Siren.Tests.Unit
             private string[] _args;
             private int _exitCode;
 
+            public TestContext()
+            {
+                var universeFilter = Substitute.For<IUniverseFilter>();
+                var universeLoader = Substitute.For<IUniverseLoader>();
+                var domainRenderer = Substitute.For<IDomainRenderer>();
+                var fileWriter = Substitute.For<IFileWriter>();
+                var logger = Substitute.For<ILogger<SirenApplication>>();
+                var programArguments = Substitute.For<IProgramArguments>();
+
+                universeLoader.IsApplicable().ReturnsForAnyArgs(true);
+
+                _sut = new SirenApplication(logger, fileWriter, domainRenderer, new[] { universeLoader }, universeFilter, programArguments);
+            }
+
             public void ArrangeAssemblyPathArguments()
             {
                 _args = new[]
@@ -90,18 +104,6 @@ namespace Siren.Tests.Unit
 
             public void ActRunApplication()
             {
-                // Arrange
-                var universeLoader = Substitute.For<IUniverseLoader>();
-                var domainRenderer = Substitute.For<IDomainRenderer>();
-                var fileWriter = Substitute.For<IFileWriter>();
-                var logger = Substitute.For<ILogger<SirenApplication>>();
-                
-                universeLoader.IsApplicable(null).ReturnsForAnyArgs(true);
-                var parsedArguments = Parser.Default.ParseArguments<ProgramArguments>(_args);
-                
-                _sut = new SirenApplication(logger, parsedArguments, fileWriter, domainRenderer, [universeLoader]);
-                
-                // Act
                 _exitCode = _sut.Perform(_args);
             }
 

@@ -3,6 +3,7 @@ using Microsoft.Extensions.Logging;
 using Mono.Cecil;
 using Siren.Domain;
 using Siren.Infrastructure.AssemblyLoad.Builders;
+using Siren.Infrastructure.AssemblyLoad.Domain;
 using Siren.Infrastructure.AssemblyLoad.Mapping;
 using Siren.Interfaces;
 
@@ -17,28 +18,31 @@ namespace Siren.Infrastructure.AssemblyLoad
         private readonly IAssemblyMapper _assemblyMapper;
         private readonly ILogger<AssemblyLoader> _logger;
         private readonly IRelationshipBuilder _relationshipBuilder;
+        private readonly IProgramArguments _programArguments;
 
         public AssemblyLoader(
             ILogger<AssemblyLoader> logger,
             IEntityBuilder entityBuilder,
             IRelationshipBuilder relationshipBuilder,
-            IAssemblyMapper assemblyMapper
+            IAssemblyMapper assemblyMapper,
+            IProgramArguments programArguments
         )
         {
             _logger = logger;
             _entityBuilder = entityBuilder;
             _relationshipBuilder = relationshipBuilder;
             _assemblyMapper = assemblyMapper;
+            _programArguments = programArguments;
         }
 
-        public bool IsApplicable(ProgramArguments arguments)
+        public bool IsApplicable()
         {
-            return !string.IsNullOrEmpty(arguments?.TestAssemblyPath);
+            return !string.IsNullOrEmpty(_programArguments?.TestAssemblyPath);
         }
 
-        public Universe Perform(ProgramArguments arguments)
+        public Universe Perform()
         {
-            var filePath = arguments.TestAssemblyPath;
+            var filePath = _programArguments.TestAssemblyPath;
 
             var assembly = AssemblyDefinition.ReadAssembly(filePath);
 
@@ -48,14 +52,14 @@ namespace Siren.Infrastructure.AssemblyLoad
                 {
                     if (type.BaseType?.Name == ModelSnapshotBaseType)
                     {
-                        _logger.LogInformation($"Located snapshot type {type.Name}");
+                        _logger.LogInformation("Located snapshot type {TypeName}", type.Name);
 
                         foreach (var method in type.Methods)
                         {
                             if (method.Name != BuildModelMethod)
                                 continue;
 
-                            _logger.LogInformation($"Located build model method");
+                            _logger.LogInformation("Located build model method");
 
                             var entityInstructions = method
                                 .Body.Instructions.Where(o => _entityBuilder.IsApplicable(o))
@@ -66,18 +70,19 @@ namespace Siren.Infrastructure.AssemblyLoad
                                 .Where(o => o != null)
                                 .ToList();
 
-                            _logger.LogInformation($"Extracted {entities.Count} entities");
+                            _logger.LogInformation("Extracted {EntitiesCount} entities", entities.Count);
 
                             var relationshipInstructions = method
                                 .Body.Instructions.Where(o => _relationshipBuilder.IsApplicable(o))
                                 .ToList();
 
                             var relationships = relationshipInstructions
-                                .SelectMany(o => _relationshipBuilder.Process(o, entities))
-                                .Where(o => o != null)
+                                .SelectMany(o => _relationshipBuilder.Process(o, entities)
+                                                 // Handle nulls gracefully for relationships among filtered entities
+                                                 ?? Enumerable.Empty<ExtractedRelationship>())
                                 .ToList();
 
-                            _logger.LogInformation($"Extracted {relationships.Count} relationships");
+                            _logger.LogInformation("Extracted {RelationshipsCount} relationships", relationships.Count);
 
                             var result = _assemblyMapper.Map(entities, relationships);
 
