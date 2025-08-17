@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using CommandLine;
 
 namespace Siren.Interfaces;
 
@@ -11,5 +10,5 @@ public interface IProgramArguments
     string ConnectionString { get; }
     string FilterEntities { get; }
     string SkipEntities { get; }
-    IEnumerable<Error> Init(string[] args);
+    IEnumerable<IArgumentError> Init(string[] args);
 }

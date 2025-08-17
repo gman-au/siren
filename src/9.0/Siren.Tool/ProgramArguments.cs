@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using CommandLine;
 using Siren.Interfaces;
 
@@ -27,10 +28,9 @@ namespace Siren.Tool
         [Option('s', "skipEntities", Required = false, HelpText = "Comma-separated list of entities to skip.")]
         public string SkipEntities { get; set; }
 
-        public IEnumerable<Error> Init(string[] args)
+        public IEnumerable<IArgumentError> Init(string[] args)
         {
             var parsedArguments = Parser.Default.ParseArguments<ProgramArguments>(args);
-
             if (parsedArguments.Tag == ParserResultType.Parsed)
             {
                 var arguments = parsedArguments.Value;
@@ -42,7 +42,7 @@ namespace Siren.Tool
                 SkipEntities = arguments.SkipEntities;
             }
 
-            return parsedArguments.Errors;
+            return parsedArguments.Errors.Select(error => new ArgumentError(error.ToString())).Cast<IArgumentError>().ToList();
         }
 
         public override string ToString()
@@ -53,6 +53,15 @@ namespace Siren.Tool
                    + $"ConnectionString: '{ConnectionString}'\r\n"
                    + $"SkipEntities: '{SkipEntities}'\r\n"
                    + $"FilterEntities: '{FilterEntities}'\r\n";
+        }
+    }
+
+    public class ArgumentError : IArgumentError
+    {
+        public string Message { get; }
+        public ArgumentError(string message)
+        {
+            Message = message;
         }
     }
 }
