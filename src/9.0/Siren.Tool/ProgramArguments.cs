@@ -16,6 +16,15 @@ namespace Siren.Tool
         [Option('m', "markdownAnchor", Required = false, HelpText = "Markdown anchor for defined section.")]
         public string MarkdownAnchor { get; set; }
 
+        [Option('b', "mermaidBlockBegin", Required = false, HelpText = "Mermaid beginning, instead of: ```mermaid")]
+        public string MermaidBlockBegin { get; set; }
+
+        [Option('e', "mermaidBlockEnd", Required = false, HelpText = "Markdown ending, instead of: ```")]
+        public string MermaidBlockEnd { get; set; }
+        
+        [Option('t', "mermaidThemeLine", Required = false, HelpText = "Theme line for Mermaid diagram.")]
+        public string MermaidThemeLine { get; set; }
+
         [Option('c', "connectionString", Required = false, HelpText = "Database connection string.")]
         public string ConnectionString { get; set; }
 
@@ -50,6 +59,9 @@ namespace Siren.Tool
             return $"TestAssemblyFolder: '{TestAssemblyPath}'\r\n"
                    + $"OutputFilePath: '{OutputFilePath}'\r\n"
                    + $"MarkdownAnchor: '{MarkdownAnchor}'\r\n"
+                   + $"MermaidBlockBegin: '{MermaidBlockBegin}'\r\n"
+                   + $"MermaidBlockEnd: '{MermaidBlockEnd}'\r\n"
+                   + $"MermaidThemeLine: '{MermaidThemeLine}'\r\n"
                    + $"ConnectionString: '{ConnectionString}'\r\n"
                    + $"SkipEntities: '{SkipEntities}'\r\n"
                    + $"FilterEntities: '{FilterEntities}'\r\n";

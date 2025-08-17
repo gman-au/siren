@@ -4,16 +4,17 @@ using System.Linq;
 using System.Text;
 using Microsoft.Extensions.Logging;
 using Siren.Domain;
+using Siren.Interfaces;
 
 namespace Siren.Infrastructure.Rendering
 {
     public class MermaidRenderer : IDomainRenderer
     {
-        private readonly ProgramArguments _programArguments;
+        private readonly IProgramArguments _programArguments;
         private readonly ILogger<MermaidRenderer> _logger;
 
         public MermaidRenderer(
-            ProgramArguments programArguments,
+            IProgramArguments programArguments,
             ILogger<MermaidRenderer> logger)
         {
             _programArguments = programArguments;
