@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using CommandLine;
-using Siren.Infrastructure.Rendering;
 using Siren.Interfaces;
 
 namespace Siren.Tool
@@ -17,16 +16,8 @@ namespace Siren.Tool
         [Option('m', "markdownAnchor", Required = false, HelpText = "Markdown anchor for defined section.")]
         public string MarkdownAnchor { get; set; }
 
-        [Option('b', "mermaidBlockStyle", Required = false,
-            HelpText =
-                "Mermaid block style. " +
-                "Possible values: default - generates block with ``` prefix used e.g. in GitHub; " +
-                "colons - generates block with ::: prefix used e.g. in Azure DevOps.",
-            Default = MermaidConstants.MermaidBlockStyleDefault)]
-        public string MermaidBlockStyle { get; set; }
-
-        [Option('t', "mermaidThemeLine", Required = false, HelpText = "Theme line for Mermaid diagram.")]
-        public string MermaidThemeLine { get; set; }
+        [Option('c', "wrapUsingColons", Required = false, HelpText = "Wrap Mermaid block with ::: instead of ```")]
+        public bool WrapUsingColons { get; set; }
 
         [Option('c', "connectionString", Required = false, HelpText = "Database connection string.")]
         public string ConnectionString { get; set; }
@@ -50,7 +41,7 @@ namespace Siren.Tool
                 TestAssemblyPath = arguments.TestAssemblyPath;
                 OutputFilePath = arguments.OutputFilePath;
                 MarkdownAnchor = arguments.MarkdownAnchor;
-                MermaidBlockStyle = arguments.MermaidBlockStyle;
+                WrapUsingColons = arguments.WrapUsingColons;
                 ConnectionString = arguments.ConnectionString;
                 FilterEntities = arguments.FilterEntities;
                 SkipEntities = arguments.SkipEntities;
@@ -65,8 +56,6 @@ namespace Siren.Tool
             return $"TestAssemblyFolder: '{TestAssemblyPath}'\r\n"
                    + $"OutputFilePath: '{OutputFilePath}'\r\n"
                    + $"MarkdownAnchor: '{MarkdownAnchor}'\r\n"
-                   + $"MermaidBlockStyle: '{MermaidBlockStyle}'\r\n"
-                   + $"MermaidThemeLine: '{MermaidThemeLine}'\r\n"
                    + $"ConnectionString: '{ConnectionString}'\r\n"
                    + $"SkipEntities: '{SkipEntities}'\r\n"
                    + $"FilterEntities: '{FilterEntities}'\r\n";
