@@ -8,13 +8,20 @@ namespace Siren.Application;
 
 public class UniverseFilter : IUniverseFilter
 {
-    public Universe FilterEntities(Universe universe, ProgramArguments arguments)
+    private readonly IProgramArguments _programArguments;
+
+    public UniverseFilter(IProgramArguments programArguments)
     {
-        if (arguments.FilterEntities == null && arguments.SkipEntities == null)
+        _programArguments = programArguments;
+    }
+
+    public Universe FilterEntities(Universe universe)
+    {
+        if (_programArguments.FilterEntities == null && _programArguments.SkipEntities == null)
             return universe;
 
-        var filterEntities = LoadCommaSeparatedValues(arguments.FilterEntities);
-        var skipEntities = LoadCommaSeparatedValues(arguments.SkipEntities);
+        var filterEntities = LoadCommaSeparatedValues(_programArguments.FilterEntities);
+        var skipEntities = LoadCommaSeparatedValues(_programArguments.SkipEntities);
 
         var filteredEntities = universe.Entities
             .Where(e =>

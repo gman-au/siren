@@ -1,6 +1,7 @@
 using Microsoft.Extensions.Logging;
 using NSubstitute;
 using Siren.Application;
+using Siren.Domain;
 using Siren.Infrastructure.Io;
 using Siren.Infrastructure.Rendering;
 using Siren.Interfaces;
@@ -57,10 +58,11 @@ namespace Siren.Tests.Unit
                 var domainRenderer = Substitute.For<IDomainRenderer>();
                 var fileWriter = Substitute.For<IFileWriter>();
                 var logger = Substitute.For<ILogger<SirenApplication>>();
+                var programArguments = Substitute.For<IProgramArguments>();
 
-                universeLoader.IsApplicable(null).ReturnsForAnyArgs(true);
+                universeLoader.IsApplicable().ReturnsForAnyArgs(true);
 
-                _sut = new SirenApplication(logger, fileWriter, domainRenderer, new[] { universeLoader }, universeFilter);
+                _sut = new SirenApplication(logger, fileWriter, domainRenderer, new[] { universeLoader }, universeFilter, programArguments);
             }
 
             public void ArrangeAssemblyPathArguments()

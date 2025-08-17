@@ -18,28 +18,31 @@ namespace Siren.Infrastructure.AssemblyLoad
         private readonly IAssemblyMapper _assemblyMapper;
         private readonly ILogger<AssemblyLoader> _logger;
         private readonly IRelationshipBuilder _relationshipBuilder;
+        private readonly IProgramArguments _programArguments;
 
         public AssemblyLoader(
             ILogger<AssemblyLoader> logger,
             IEntityBuilder entityBuilder,
             IRelationshipBuilder relationshipBuilder,
-            IAssemblyMapper assemblyMapper
+            IAssemblyMapper assemblyMapper,
+            IProgramArguments programArguments
         )
         {
             _logger = logger;
             _entityBuilder = entityBuilder;
             _relationshipBuilder = relationshipBuilder;
             _assemblyMapper = assemblyMapper;
+            _programArguments = programArguments;
         }
 
-        public bool IsApplicable(ProgramArguments arguments)
+        public bool IsApplicable()
         {
-            return !string.IsNullOrEmpty(arguments?.TestAssemblyPath);
+            return !string.IsNullOrEmpty(_programArguments?.TestAssemblyPath);
         }
 
-        public Universe Perform(ProgramArguments arguments)
+        public Universe Perform()
         {
-            var filePath = arguments.TestAssemblyPath;
+            var filePath = _programArguments.TestAssemblyPath;
 
             var assembly = AssemblyDefinition.ReadAssembly(filePath);
 
