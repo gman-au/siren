@@ -28,7 +28,7 @@ namespace Siren.Tool
         [Option('s', "skipEntities", Required = false, HelpText = "Comma-separated list of entities to skip.")]
         public string SkipEntities { get; set; }
 
-        public IEnumerable<IArgumentError> Init(string[] args)
+        public IEnumerable<IArgumentError> Initialize(string[] args)
         {
             var parsedArguments = Parser.Default.ParseArguments<ProgramArguments>(args);
             if (parsedArguments.Tag == ParserResultType.Parsed)

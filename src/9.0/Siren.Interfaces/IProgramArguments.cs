@@ -10,5 +10,5 @@ public interface IProgramArguments
     string ConnectionString { get; }
     string FilterEntities { get; }
     string SkipEntities { get; }
-    IEnumerable<IArgumentError> Init(string[] args);
+    IEnumerable<IArgumentError> Initialize(string[] args);
 }

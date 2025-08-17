@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Extensions.Logging;
-using Siren.Domain;
 using Siren.Infrastructure.Io;
 using Siren.Infrastructure.Rendering;
 using Siren.Interfaces;
@@ -41,7 +40,7 @@ namespace Siren.Application
             {
                 _logger.LogInformation("Starting Siren console...");
 
-                var errors = _programArguments.Init(args);
+                var errors = _programArguments.Initialize(args);
                 if (errors.Any())
                     return -1;
 
