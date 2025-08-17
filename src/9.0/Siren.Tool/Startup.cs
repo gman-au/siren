@@ -1,10 +1,6 @@
-using System;
-using System.Linq;
-using CommandLine;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Siren.Application;
-using Siren.Domain;
 using Siren.Infrastructure.AssemblyLoad;
 using Siren.Infrastructure.AssemblyLoad.Builders;
 using Siren.Infrastructure.AssemblyLoad.Configuration;

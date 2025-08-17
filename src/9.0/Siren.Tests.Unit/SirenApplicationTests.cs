@@ -1,8 +1,6 @@
-using CommandLine;
 using Microsoft.Extensions.Logging;
 using NSubstitute;
 using Siren.Application;
-using Siren.Domain;
 using Siren.Infrastructure.Io;
 using Siren.Infrastructure.Rendering;
 using Siren.Interfaces;
