@@ -16,7 +16,7 @@ namespace Siren.Tool
         [Option('m', "markdownAnchor", Required = false, HelpText = "Markdown anchor for defined section.")]
         public string MarkdownAnchor { get; set; }
 
-        [Option('c', "wrapUsingColons", Required = false, HelpText = "Wrap Mermaid block with ::: instead of ```")]
+        [Option('w', "wrapUsingColons", Required = false, HelpText = "Wrap Mermaid block with ::: instead of ```")]
         public bool WrapUsingColons { get; set; }
 
         [Option('c', "connectionString", Required = false, HelpText = "Database connection string.")]
