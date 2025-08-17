@@ -7,8 +7,7 @@ public interface IProgramArguments
     string TestAssemblyPath { get; }
     string OutputFilePath { get; }
     string MarkdownAnchor { get; }
-    string MermaidBlockBegin { get; }
-    string MermaidBlockEnd { get; }
+    string MermaidBlockStyle { get; }
     string MermaidThemeLine { get; }
     string ConnectionString { get; }
     string FilterEntities { get; }

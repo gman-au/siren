@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using CommandLine;
+using Siren.Infrastructure.Rendering;
 using Siren.Interfaces;
 
 namespace Siren.Tool
@@ -16,22 +17,25 @@ namespace Siren.Tool
         [Option('m', "markdownAnchor", Required = false, HelpText = "Markdown anchor for defined section.")]
         public string MarkdownAnchor { get; set; }
 
-        [Option('b', "mermaidBlockBegin", Required = false, HelpText = "Mermaid beginning, instead of: ```mermaid")]
-        public string MermaidBlockBegin { get; set; }
+        [Option('b', "mermaidBlockStyle", Required = false,
+            HelpText =
+                "Mermaid block style. " +
+                "Possible values: default - generates block with ``` prefix used e.g. in GitHub; " +
+                "colons - generates block with ::: prefix used e.g. in Azure DevOps.",
+            Default = MermaidConstants.MermaidBlockStyleDefault)]
+        public string MermaidBlockStyle { get; set; }
 
-        [Option('e', "mermaidBlockEnd", Required = false, HelpText = "Markdown ending, instead of: ```")]
-        public string MermaidBlockEnd { get; set; }
-        
         [Option('t', "mermaidThemeLine", Required = false, HelpText = "Theme line for Mermaid diagram.")]
         public string MermaidThemeLine { get; set; }
 
         [Option('c', "connectionString", Required = false, HelpText = "Database connection string.")]
         public string ConnectionString { get; set; }
 
-        [Option('f', "filterEntities", Required = false, HelpText =
-            "Comma-separated list of entity-substrings to filter. " +
-            "Only entities that contain any of these substrings will be included in the output. " +
-            "E.g. 'User,Group' will select all entities that contain 'User' or 'Group' in name.")]
+        [Option('f', "filterEntities", Required = false,
+            HelpText =
+                "Comma-separated list of entity-substrings to filter. " +
+                "Only entities that contain any of these substrings will be included in the output. " +
+                "E.g. 'User,Group' will select all entities that contain 'User' or 'Group' in name.")]
         public string FilterEntities { get; set; }
 
         [Option('s', "skipEntities", Required = false, HelpText = "Comma-separated list of entities to skip.")]
@@ -46,12 +50,14 @@ namespace Siren.Tool
                 TestAssemblyPath = arguments.TestAssemblyPath;
                 OutputFilePath = arguments.OutputFilePath;
                 MarkdownAnchor = arguments.MarkdownAnchor;
+                MermaidBlockStyle = arguments.MermaidBlockStyle;
                 ConnectionString = arguments.ConnectionString;
                 FilterEntities = arguments.FilterEntities;
                 SkipEntities = arguments.SkipEntities;
             }
 
-            return parsedArguments.Errors.Select(error => new ArgumentError(error.ToString())).Cast<IArgumentError>().ToList();
+            return parsedArguments.Errors.Select(error =>
+                new ArgumentError(error.ToString())).Cast<IArgumentError>().ToList();
         }
 
         public override string ToString()
@@ -59,8 +65,7 @@ namespace Siren.Tool
             return $"TestAssemblyFolder: '{TestAssemblyPath}'\r\n"
                    + $"OutputFilePath: '{OutputFilePath}'\r\n"
                    + $"MarkdownAnchor: '{MarkdownAnchor}'\r\n"
-                   + $"MermaidBlockBegin: '{MermaidBlockBegin}'\r\n"
-                   + $"MermaidBlockEnd: '{MermaidBlockEnd}'\r\n"
+                   + $"MermaidBlockStyle: '{MermaidBlockStyle}'\r\n"
                    + $"MermaidThemeLine: '{MermaidThemeLine}'\r\n"
                    + $"ConnectionString: '{ConnectionString}'\r\n"
                    + $"SkipEntities: '{SkipEntities}'\r\n"
@@ -71,6 +76,7 @@ namespace Siren.Tool
     public class ArgumentError : IArgumentError
     {
         public string Message { get; }
+
         public ArgumentError(string message)
         {
             Message = message;

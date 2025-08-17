@@ -31,7 +31,12 @@ namespace Siren.Infrastructure.Rendering
             result.AppendLine(MermaidConstants.SirenAnchorStart);
 
             // Mermaid header
-            result.AppendLine(_programArguments.MermaidBlockBegin ?? MermaidConstants.MermaidBlockBegin);
+            result.AppendLine(_programArguments.MermaidBlockStyle switch
+            {
+                MermaidConstants.MermaidBlockStyleColons => MermaidConstants.MermaidColonBlockBegin,
+                MermaidConstants.MermaidBlockStyleDefault => MermaidConstants.MermaidDefaultBlockBegin,
+                _ => throw new Exception("Specify one of either default or colons Mermaid block style.")
+            });
 
             // Header
             result.AppendLine($"\t{MermaidConstants.MermaidErDiagramHeader}");
@@ -86,7 +91,11 @@ namespace Siren.Infrastructure.Rendering
             }
 
             // Mermaid footer
-            result.AppendLine(_programArguments.MermaidBlockEnd ?? MermaidConstants.MermaidBlockEnd);
+            result.AppendLine(_programArguments.MermaidBlockStyle switch
+            {
+                MermaidConstants.MermaidBlockStyleColons => MermaidConstants.MermaidColonBlockEnd,
+                _ => MermaidConstants.MermaidDefaultBlockEnd
+            });
 
             // Text in file replace footer
             result.AppendLine(MermaidConstants.SirenAnchorEnd);
