@@ -22,11 +22,10 @@ namespace Siren.Tool
         [Option('c', "connectionString", Required = false, HelpText = "Database connection string.")]
         public string ConnectionString { get; set; }
 
-        [Option('f', "filterEntities", Required = false,
-            HelpText =
-                "Comma-separated list of entity-substrings to filter. " +
-                "Only entities that contain any of these substrings will be included in the output. " +
-                "E.g. 'User,Group' will select all entities that contain 'User' or 'Group' in name.")]
+        [Option('f', "filterEntities", Required = false, HelpText =
+            "Comma-separated list of entity-substrings to filter. " +
+            "Only entities that contain any of these substrings will be included in the output. " +
+            "E.g. 'User,Group' will select all entities that contain 'User' or 'Group' in name.")]
         public string FilterEntities { get; set; }
 
         [Option('s', "skipEntities", Required = false, HelpText = "Comma-separated list of entities to skip.")]
