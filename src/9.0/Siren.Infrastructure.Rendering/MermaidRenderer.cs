@@ -4,20 +4,15 @@ using System.Linq;
 using System.Text;
 using Microsoft.Extensions.Logging;
 using Siren.Domain;
-using Siren.Interfaces;
 
 namespace Siren.Infrastructure.Rendering
 {
     public class MermaidRenderer : IDomainRenderer
     {
-        private readonly IProgramArguments _programArguments;
         private readonly ILogger<MermaidRenderer> _logger;
 
-        public MermaidRenderer(
-            IProgramArguments programArguments,
-            ILogger<MermaidRenderer> logger)
+        public MermaidRenderer(ILogger<MermaidRenderer> logger)
         {
-            _programArguments = programArguments;
             _logger = logger;
         }
 
@@ -30,18 +25,14 @@ namespace Siren.Infrastructure.Rendering
             // Text in file replace header
             result.AppendLine(MermaidConstants.SirenAnchorStart);
 
-            var wrappingCharacters = _programArguments.WrapUsingColons
-                ? MermaidConstants.MermaidBlockColonCharacters
-                : MermaidConstants.MermaidBlockDefaultCharacters;
             // Mermaid header
-            result.AppendLine($"{wrappingCharacters}{MermaidConstants.MermaidBlockName}");
+            result.AppendLine(MermaidConstants.MermaidAnchorStart);
 
             // Header
             result.AppendLine($"\t{MermaidConstants.MermaidErDiagramHeader}");
 
             // (optional) neutral theme
             result.AppendLine($"\t{MermaidConstants.MermaidNeutralThemeLine}");
-
             _logger.LogInformation("Rendered header");
 
             var entities = universe.Entities.OrderBy(o => o.FullName);
@@ -70,7 +61,7 @@ namespace Siren.Infrastructure.Rendering
 
                     result.AppendLine();
 
-                    _logger.LogInformation("Rendered entity: {EntityShortName}", entity.ShortName);
+                    _logger.LogInformation($"Rendered entity: {entity.ShortName}");
                 }
 
                 // Entity footer
@@ -81,15 +72,15 @@ namespace Siren.Infrastructure.Rendering
             {
                 result.AppendLine(
                     $"{relationship.Source?.ShortName}"
-                    + $"{MapCardinalityToString(relationship.SourceCardinality, true)}--"
-                    + $"{MapCardinalityToString(relationship.TargetCardinality, false)}"
-                    + $"{relationship.Target?.ShortName} "
-                    + ": \"\""
+                        + $"{MapCardinalityToString(relationship.SourceCardinality, true)}--"
+                        + $"{MapCardinalityToString(relationship.TargetCardinality, false)}"
+                        + $"{relationship.Target?.ShortName} "
+                        + ": \"\""
                 );
             }
 
             // Mermaid footer
-            result.AppendLine(wrappingCharacters);
+            result.AppendLine(MermaidConstants.MermaidAnchorEnd);
 
             // Text in file replace footer
             result.AppendLine(MermaidConstants.SirenAnchorEnd);
