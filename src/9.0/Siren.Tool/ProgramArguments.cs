@@ -28,6 +28,9 @@ namespace Siren.Tool
         [Option('s', "skipEntities", Required = false, HelpText = "Comma-separated list of entities to skip.")]
         public string SkipEntities { get; set; }
 
+        [Option('t', "template", Required = false, HelpText = "Render template (e.g. AzureDevOps). Default is 'default'.", Default = "default")]
+        public string RenderTemplate { get; set; }
+
         public IEnumerable<IArgumentError> Initialize(string[] args)
         {
             var parsedArguments = Parser.Default.ParseArguments<ProgramArguments>(args);
@@ -40,6 +43,7 @@ namespace Siren.Tool
                 ConnectionString = arguments.ConnectionString;
                 FilterEntities = arguments.FilterEntities;
                 SkipEntities = arguments.SkipEntities;
+                RenderTemplate = arguments.RenderTemplate;
             }
 
             return parsedArguments.Errors.Select(error =>
@@ -52,8 +56,9 @@ namespace Siren.Tool
                    + $"OutputFilePath: '{OutputFilePath}'\r\n"
                    + $"MarkdownAnchor: '{MarkdownAnchor}'\r\n"
                    + $"ConnectionString: '{ConnectionString}'\r\n"
+                   + $"FilterEntities: '{FilterEntities}'\r\n"
                    + $"SkipEntities: '{SkipEntities}'\r\n"
-                   + $"FilterEntities: '{FilterEntities}'\r\n";
+                   + $"RenderTemplate: '{RenderTemplate}'\r\n";
         }
     }
 

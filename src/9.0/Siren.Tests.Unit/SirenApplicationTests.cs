@@ -4,6 +4,7 @@ using Siren.Application;
 using Siren.Infrastructure.Io;
 using Siren.Infrastructure.Rendering;
 using Siren.Interfaces;
+using Siren.Tool;
 using Xunit;
 
 namespace Siren.Tests.Unit
@@ -57,7 +58,7 @@ namespace Siren.Tests.Unit
                 var domainRenderer = Substitute.For<IDomainRenderer>();
                 var fileWriter = Substitute.For<IFileWriter>();
                 var logger = Substitute.For<ILogger<SirenApplication>>();
-                var programArguments = Substitute.For<IProgramArguments>();
+                var programArguments = new ProgramArguments();
 
                 universeLoader.IsApplicable().ReturnsForAnyArgs(true);
 

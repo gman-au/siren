@@ -34,7 +34,9 @@ namespace Siren.Tool
                 .AddSingleton<IKeyBuilder, KeyBuilder>()
                 .AddSingleton<IRelationshipFilter, RelationshipFilter>()
                 .AddSingleton<ISearchApplication, SearchApplication>()
-                .AddSingleton<IDomainRenderer, MermaidRenderer>();
+                .AddSingleton<IDomainRenderer, MermaidRenderer>()
+                .AddSingleton<IRenderTemplate, AzureDevOpsRenderTemplate>()
+                .AddSingleton<IRenderTemplate, DefaultRenderTemplate>();
 
             services.AddLogging(o => o.AddConsole());
 

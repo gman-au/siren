@@ -10,9 +10,11 @@ namespace Siren.Infrastructure.Rendering
     public class MermaidRenderer : IDomainRenderer
     {
         private readonly ILogger<MermaidRenderer> _logger;
+        private readonly IEnumerable<IRenderTemplate> _renderTemplates;
 
-        public MermaidRenderer(ILogger<MermaidRenderer> logger)
+        public MermaidRenderer(IEnumerable<IRenderTemplate> renderTemplates, ILogger<MermaidRenderer> logger)
         {
+            _renderTemplates = renderTemplates;
             _logger = logger;
         }
 
@@ -21,18 +23,23 @@ namespace Siren.Infrastructure.Rendering
             _logger.LogInformation("Commencing render to Mermaid syntax");
 
             var result = new StringBuilder();
+            var template = _renderTemplates.FirstOrDefault(t => t.IsApplicable())
+                ?? throw new Exception("No applicable render template found for Mermaid rendering");
 
             // Text in file replace header
             result.AppendLine(MermaidConstants.SirenAnchorStart);
 
             // Mermaid header
-            result.AppendLine(MermaidConstants.MermaidAnchorStart);
+            result.AppendLine(template.MermaidBlockStart);
 
             // Header
             result.AppendLine($"\t{MermaidConstants.MermaidErDiagramHeader}");
 
-            // (optional) neutral theme
-            result.AppendLine($"\t{MermaidConstants.MermaidNeutralThemeLine}");
+            // (optional) theme line
+            if (!string.IsNullOrEmpty(template.ThemeLine))
+            {
+                result.AppendLine($"\t{template.ThemeLine}");
+            }
             _logger.LogInformation("Rendered header");
 
             var entities = universe.Entities.OrderBy(o => o.FullName);
@@ -61,7 +68,7 @@ namespace Siren.Infrastructure.Rendering
 
                     result.AppendLine();
 
-                    _logger.LogInformation($"Rendered entity: {entity.ShortName}");
+                    _logger.LogInformation("Rendered entity: {EntityShortName}", entity.ShortName);
                 }
 
                 // Entity footer
@@ -72,15 +79,15 @@ namespace Siren.Infrastructure.Rendering
             {
                 result.AppendLine(
                     $"{relationship.Source?.ShortName}"
-                        + $"{MapCardinalityToString(relationship.SourceCardinality, true)}--"
-                        + $"{MapCardinalityToString(relationship.TargetCardinality, false)}"
-                        + $"{relationship.Target?.ShortName} "
-                        + ": \"\""
+                    + $"{MapCardinalityToString(relationship.SourceCardinality, true)}--"
+                    + $"{MapCardinalityToString(relationship.TargetCardinality, false)}"
+                    + $"{relationship.Target?.ShortName} "
+                    + ": \"\""
                 );
             }
 
             // Mermaid footer
-            result.AppendLine(MermaidConstants.MermaidAnchorEnd);
+            result.AppendLine(template.MermaidBlockEnd);
 
             // Text in file replace footer
             result.AppendLine(MermaidConstants.SirenAnchorEnd);
