@@ -10,5 +10,6 @@ public interface IProgramArguments
     string ConnectionString { get; }
     string FilterEntities { get; }
     string SkipEntities { get; }
+    string RenderTemplate { get; }
     IEnumerable<IArgumentError> Initialize(string[] args);
 }

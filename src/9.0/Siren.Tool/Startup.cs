@@ -1,7 +1,6 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Siren.Application;
-using Siren.Domain;
 using Siren.Infrastructure.AssemblyLoad;
 using Siren.Infrastructure.AssemblyLoad.Builders;
 using Siren.Infrastructure.AssemblyLoad.Configuration;
@@ -35,7 +34,9 @@ namespace Siren.Tool
                 .AddSingleton<IKeyBuilder, KeyBuilder>()
                 .AddSingleton<IRelationshipFilter, RelationshipFilter>()
                 .AddSingleton<ISearchApplication, SearchApplication>()
-                .AddSingleton<IDomainRenderer, MermaidRenderer>();
+                .AddSingleton<IDomainRenderer, MermaidRenderer>()
+                .AddSingleton<IRenderTemplate, AzureDevOpsRenderTemplate>()
+                .AddSingleton<IRenderTemplate, DefaultRenderTemplate>();
 
             services.AddLogging(o => o.AddConsole());
 
