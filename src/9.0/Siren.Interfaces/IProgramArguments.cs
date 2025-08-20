@@ -11,5 +11,7 @@ public interface IProgramArguments
     string FilterEntities { get; }
     string SkipEntities { get; }
     string RenderTemplate { get; }
+    string FilterSchemas { get; }
+    string SkipSchemas { get; }
     IEnumerable<IArgumentError> Initialize(string[] args);
 }

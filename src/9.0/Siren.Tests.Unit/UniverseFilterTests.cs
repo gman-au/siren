@@ -49,7 +49,7 @@ namespace Siren.Tests.Unit
             public void ActFilter()
             {
                 var sut = new UniverseFilter(Arguments);
-                Result = sut.FilterEntities(Universe);
+                Result = sut.FilterByEntity(Universe);
             }
         }
 

@@ -61,9 +61,10 @@ namespace Siren.Application
                     );
 
                 var universe = universeLoader.Perform();
-                var filteredUniverse = _universeFilter.FilterEntities(universe);
+                universe = _universeFilter.FilterBySchema(universe);
+                universe = _universeFilter.FilterByEntity(universe);
 
-                var result = _domainRenderer.Perform(filteredUniverse);
+                var result = _domainRenderer.Perform(universe);
 
                 _fileWriter.Perform(outputPath, result, markdownAnchor);
 

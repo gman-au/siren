@@ -28,6 +28,15 @@ namespace Siren.Tool
         [Option('s', "skipEntities", Required = false, HelpText = "Comma-separated list of entities to skip.")]
         public string SkipEntities { get; set; }
 
+        [Option('h', "filterSchemas", Required = false, HelpText =
+            "Comma-separated list of table schemas to filter. " +
+            "Only entities belonging to schemas that contain any of these substrings will be included in the output. " +
+            "E.g. 'dbo,reporting' will select all entities belonging to 'dbo.' or 'reporting.' database schemas.")]
+        public string FilterSchemas { get; set; }
+
+        [Option('o', "skipSchemas", Required = false, HelpText = "Comma-separated list of schemas to skip.")]
+        public string SkipSchemas { get; set; }
+
         [Option('t', "template", Required = false, HelpText = "Render template (e.g. AzureDevOps). Default is 'default'.", Default = "default")]
         public string RenderTemplate { get; set; }
 
@@ -44,6 +53,8 @@ namespace Siren.Tool
                 FilterEntities = arguments.FilterEntities;
                 SkipEntities = arguments.SkipEntities;
                 RenderTemplate = arguments.RenderTemplate;
+                FilterSchemas = arguments.FilterSchemas;
+                SkipSchemas = arguments.SkipSchemas;
             }
 
             return parsedArguments.Errors.Select(error =>
@@ -58,7 +69,9 @@ namespace Siren.Tool
                    + $"ConnectionString: '{ConnectionString}'\r\n"
                    + $"FilterEntities: '{FilterEntities}'\r\n"
                    + $"SkipEntities: '{SkipEntities}'\r\n"
-                   + $"RenderTemplate: '{RenderTemplate}'\r\n";
+                   + $"RenderTemplate: '{RenderTemplate}'\r\n"
+                   + $"FilterSchemas: '{FilterSchemas}'\r\n"
+                   + $"SkipSchemas: '{SkipSchemas}'\r\n";
         }
     }
 

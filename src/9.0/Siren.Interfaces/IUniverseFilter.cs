@@ -4,5 +4,7 @@ namespace Siren.Interfaces;
 
 public interface IUniverseFilter
 {
-    Universe FilterEntities(Universe universe);
+    Universe FilterByEntity(Universe universe);
+
+    Universe FilterBySchema(Universe universe);
 }
