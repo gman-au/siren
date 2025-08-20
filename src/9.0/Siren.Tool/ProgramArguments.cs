@@ -34,7 +34,7 @@ namespace Siren.Tool
             "E.g. 'dbo,reporting' will select all entities belonging to 'dbo.' or 'reporting.' database schemas.")]
         public string FilterSchemas { get; set; }
 
-        [Option('o', "skipSchemas", Required = false, HelpText = "Comma-separated list of schemas to skip.")]
+        [Option('x', "skipSchemas", Required = false, HelpText = "Comma-separated list of schemas to skip.")]
         public string SkipSchemas { get; set; }
 
         [Option('t', "template", Required = false, HelpText = "Render template (e.g. AzureDevOps). Default is 'default'.", Default = "default")]
