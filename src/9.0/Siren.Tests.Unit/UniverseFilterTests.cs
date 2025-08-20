@@ -8,56 +8,12 @@ namespace Siren.Tests.Unit
 {
     public class UniverseFilterTests
     {
-        private class TestContext
-        {
-            private ProgramArguments Arguments { get; set; }
-            private Universe Universe { get; set; }
-            public Universe Result { get; private set; }
-
-            public void ArrangeEntities(params string[] entityNames)
-            {
-                Universe = new Universe
-                {
-                    Entities = entityNames.Select(n => new Entity { ShortName = n }).ToList()
-                };
-            }
-
-            public void ArrangeEntitiesAndRelationships((string, string)[] relationships, params string[] entityNames)
-            {
-                var entities = entityNames.Select(n => new Entity { ShortName = n }).ToList();
-                Universe = new Universe
-                {
-                    Entities = entities,
-                    Relationships = relationships.Select(rel =>
-                        new Relationship
-                        {
-                            Source = entities.First(e => e.ShortName == rel.Item1),
-                            Target = entities.First(e => e.ShortName == rel.Item2)
-                        }).ToList()
-                };
-            }
-
-            public void ArrangeArguments(string filterEntities = null, string skipEntities = null)
-            {
-                Arguments = new ProgramArguments
-                {
-                    FilterEntities = filterEntities,
-                    SkipEntities = skipEntities
-                };
-            }
-
-            public void ActFilter()
-            {
-                var sut = new UniverseFilter(Arguments);
-                Result = sut.FilterByEntity(Universe);
-            }
-        }
-
         [Fact]
         public void Test_FilterEntities_FiltersBySubstring()
         {
             var ctx = new TestContext();
-            ctx.ArrangeArguments(filterEntities: "User,Group");
+            ctx.ArrangeEntityFilterArguments("User,Group");
+            ctx.ArrangeSchemaFilterArguments();
             ctx.ArrangeEntities("User", "Group", "UserGroup", "Role", "Permission");
             ctx.ActFilter();
 
@@ -73,7 +29,8 @@ namespace Siren.Tests.Unit
         public void Test_FilterEntities_SkipEntities()
         {
             var ctx = new TestContext();
-            ctx.ArrangeArguments(skipEntities: "User,Role");
+            ctx.ArrangeEntityFilterArguments(skipEntities: "User,Role");
+            ctx.ArrangeSchemaFilterArguments();
             ctx.ArrangeEntities("User", "Group", "Role");
             ctx.ActFilter();
 
@@ -87,7 +44,8 @@ namespace Siren.Tests.Unit
         public void Test_FilterEntities_FilterAndSkipCombined()
         {
             var ctx = new TestContext();
-            ctx.ArrangeArguments(filterEntities: "User,Group", skipEntities: "UserGroup");
+            ctx.ArrangeEntityFilterArguments("User,Group", "UserGroup");
+            ctx.ArrangeSchemaFilterArguments();
             ctx.ArrangeEntities("User", "Group", "UserGroup", "Role");
             ctx.ActFilter();
 
@@ -102,7 +60,8 @@ namespace Siren.Tests.Unit
         public void Test_FilterEntities_NoFiltersReturnsAll()
         {
             var ctx = new TestContext();
-            ctx.ArrangeArguments();
+            ctx.ArrangeEntityFilterArguments();
+            ctx.ArrangeSchemaFilterArguments();
             ctx.ArrangeEntities("User", "Group");
             ctx.ActFilter();
 
@@ -115,10 +74,13 @@ namespace Siren.Tests.Unit
         public void Test_FilterEntities_FiltersRelationshipsByEntities()
         {
             var ctx = new TestContext();
-            ctx.ArrangeArguments(filterEntities: "User,Group");
+            ctx.ArrangeEntityFilterArguments("User,Group");
+            ctx.ArrangeSchemaFilterArguments();
             ctx.ArrangeEntitiesAndRelationships(
                 [("User", "Group"), ("Group", "Role"), ("User", "Role")],
-                "User", "Group", "Role"
+                ("dbo", "User"),
+                ("dbo", "Group"),
+                ("dbo", "Role")
             );
             ctx.ActFilter();
 
@@ -132,10 +94,13 @@ namespace Siren.Tests.Unit
         public void Test_FilterEntities_RemovesRelationshipsWithSkippedEntities()
         {
             var ctx = new TestContext();
-            ctx.ArrangeArguments(skipEntities: "Role");
+            ctx.ArrangeEntityFilterArguments(skipEntities: "Role");
+            ctx.ArrangeSchemaFilterArguments();
             ctx.ArrangeEntitiesAndRelationships(
                 [("User", "Group"), ("Group", "Role"), ("User", "Role")],
-                "User", "Group", "Role"
+                ("dbo", "User"),
+                ("dbo", "Group"),
+                ("dbo", "Role")
             );
             ctx.ActFilter();
 
@@ -149,15 +114,77 @@ namespace Siren.Tests.Unit
         public void Test_FilterEntities_NoEntitiesMeansNoRelationships()
         {
             var ctx = new TestContext();
-            ctx.ArrangeArguments(filterEntities: "NonExistent");
+            ctx.ArrangeEntityFilterArguments("NonExistent");
+            ctx.ArrangeSchemaFilterArguments();
             ctx.ArrangeEntitiesAndRelationships(
                 [("User", "Group")],
-                "User", "Group"
+                ("dbo", "User"),
+                ("dbo", "Group")
             );
             ctx.ActFilter();
 
             Assert.Empty(ctx.Result.Entities);
             Assert.Empty(ctx.Result.Relationships);
+        }
+
+        private class TestContext
+        {
+            private ProgramArguments Arguments { get; set; }
+            private Universe Universe { get; set; }
+            public Universe Result { get; private set; }
+
+            public void ArrangeEntities(params string[] entityNames)
+            {
+                Universe = new Universe
+                {
+                    Entities =
+                        entityNames
+                            .Select(n => new Entity { ShortName = n })
+                            .ToList()
+                };
+            }
+
+            public void ArrangeEntitiesAndRelationships((string, string)[] relationships, params (string, string)[] entityNames)
+            {
+                var entities =
+                    entityNames
+                        .Select(n => new Entity { Schema = n.Item1, ShortName = n.Item2 })
+                        .ToList();
+
+                Universe = new Universe
+                {
+                    Entities = entities,
+                    Relationships =
+                        relationships
+                            .Select(rel =>
+                                new Relationship
+                                {
+                                    Source = entities.First(e => e.ShortName == rel.Item1),
+                                    Target = entities.First(e => e.ShortName == rel.Item2)
+                                })
+                            .ToList()
+                };
+            }
+
+            public void ArrangeEntityFilterArguments(string filterEntities = null, string skipEntities = null)
+            {
+                Arguments = Arguments ?? new ProgramArguments();
+                Arguments.FilterEntities = filterEntities;
+                Arguments.SkipEntities = skipEntities;
+            }
+
+            public void ArrangeSchemaFilterArguments(string filterSchemas = null, string skipSchemas = null)
+            {
+                Arguments = Arguments ?? new ProgramArguments();
+                Arguments.FilterSchemas = filterSchemas;
+                Arguments.SkipSchemas = skipSchemas;
+            }
+
+            public void ActFilter()
+            {
+                var sut = new UniverseFilter(Arguments);
+                Result = sut.FilterByEntity(Universe);
+            }
         }
     }
 }

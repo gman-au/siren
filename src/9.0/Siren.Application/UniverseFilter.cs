@@ -10,7 +10,7 @@ namespace Siren.Application
     {
         public Universe FilterByEntity(Universe universe)
         {
-            if (programArguments.FilterEntities == null && programArguments.SkipEntities == null)
+            if (programArguments?.FilterEntities == null && programArguments?.SkipEntities == null)
                 return universe;
 
             var filterEntities = LoadCommaSeparatedValues(programArguments.FilterEntities);
@@ -50,7 +50,7 @@ namespace Siren.Application
 
         public Universe FilterBySchema(Universe universe)
         {
-            if (programArguments.FilterSchemas == null && programArguments.SkipSchemas == null)
+            if (programArguments?.FilterSchemas == null && programArguments?.SkipSchemas == null)
                 return universe;
 
             var filterSchemas = LoadCommaSeparatedValues(programArguments.FilterSchemas);
