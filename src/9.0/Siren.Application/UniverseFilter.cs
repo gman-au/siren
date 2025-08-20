@@ -62,7 +62,7 @@ namespace Siren.Application
                     .Where(e =>
                         (
                             !filterSchemas.Any() ||
-                            filterSchemas.Any(f => e.Schema.Contains(f, StringComparison.OrdinalIgnoreCase))
+                            filterSchemas.Any(f => (e.Schema ?? string.Empty).Contains(f, StringComparison.OrdinalIgnoreCase))
                         ) &&
                         !skipSchemas.Contains(e.Schema)
                     )

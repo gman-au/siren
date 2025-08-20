@@ -14,7 +14,13 @@ namespace Siren.Tests.Unit
             var ctx = new TestContext();
             ctx.ArrangeEntityFilterArguments("User,Group");
             ctx.ArrangeSchemaFilterArguments();
-            ctx.ArrangeEntities("User", "Group", "UserGroup", "Role", "Permission");
+            ctx.ArrangeEntities(
+                ("dbo", "User"),
+                ("dbo", "Group"),
+                ("dbo", "UserGroup"),
+                ("dbo", "Role"),
+                ("dbo", "Permission")
+            );
             ctx.ActFilter();
 
             Assert.Contains(ctx.Result.Entities, e => e.ShortName == "User");
@@ -31,7 +37,11 @@ namespace Siren.Tests.Unit
             var ctx = new TestContext();
             ctx.ArrangeEntityFilterArguments(skipEntities: "User,Role");
             ctx.ArrangeSchemaFilterArguments();
-            ctx.ArrangeEntities("User", "Group", "Role");
+            ctx.ArrangeEntities(
+                ("dbo", "User"),
+                ("dbo", "Group"),
+                ("dbo", "Role")
+            );
             ctx.ActFilter();
 
             Assert.DoesNotContain(ctx.Result.Entities, e => e.ShortName == "User");
@@ -46,7 +56,34 @@ namespace Siren.Tests.Unit
             var ctx = new TestContext();
             ctx.ArrangeEntityFilterArguments("User,Group", "UserGroup");
             ctx.ArrangeSchemaFilterArguments();
-            ctx.ArrangeEntities("User", "Group", "UserGroup", "Role");
+            ctx.ArrangeEntities(
+                ("dbo", "User"),
+                ("dbo", "Group"),
+                ("dbo", "UserGroup"),
+                ("dbo", "Role")
+            );
+            ctx.ActFilter();
+
+            Assert.Contains(ctx.Result.Entities, e => e.ShortName == "User");
+            Assert.Contains(ctx.Result.Entities, e => e.ShortName == "Group");
+            Assert.DoesNotContain(ctx.Result.Entities, e => e.ShortName == "UserGroup");
+            Assert.DoesNotContain(ctx.Result.Entities, e => e.ShortName == "Role");
+            Assert.Equal(2, ctx.Result.Entities.Count());
+        }
+
+        [Fact]
+        public void Test_FilterSchemas_FilterAndSkipCombined()
+        {
+            var ctx = new TestContext();
+            ctx.ArrangeEntityFilterArguments();
+            ctx.ArrangeSchemaFilterArguments("dbo,reporting", "llama");
+            ctx.ArrangeEntities(
+                ("dbo", "User"),
+                ("reporting", "Group"),
+                (null, "UserGroup"),
+                ("llama", "Role"),
+                ("miscellaneous", "Role")
+            );
             ctx.ActFilter();
 
             Assert.Contains(ctx.Result.Entities, e => e.ShortName == "User");
@@ -62,7 +99,10 @@ namespace Siren.Tests.Unit
             var ctx = new TestContext();
             ctx.ArrangeEntityFilterArguments();
             ctx.ArrangeSchemaFilterArguments();
-            ctx.ArrangeEntities("User", "Group");
+            ctx.ArrangeEntities(
+                ("dbo", "User"),
+                ("dbo", "Group")
+            );
             ctx.ActFilter();
 
             Assert.Equal(2, ctx.Result.Entities.Count());
@@ -133,13 +173,13 @@ namespace Siren.Tests.Unit
             private Universe Universe { get; set; }
             public Universe Result { get; private set; }
 
-            public void ArrangeEntities(params string[] entityNames)
+            public void ArrangeEntities(params (string, string)[] entityNames)
             {
                 Universe = new Universe
                 {
                     Entities =
                         entityNames
-                            .Select(n => new Entity { ShortName = n })
+                            .Select(n => new Entity { Schema = n.Item1, ShortName = n.Item2 })
                             .ToList()
                 };
             }
@@ -184,6 +224,7 @@ namespace Siren.Tests.Unit
             {
                 var sut = new UniverseFilter(Arguments);
                 Result = sut.FilterByEntity(Universe);
+                Result = sut.FilterBySchema(Result);
             }
         }
     }
