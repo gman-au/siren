@@ -13,12 +13,12 @@ namespace Siren.Infrastructure.AssemblyLoad
     {
         private const string ModelSnapshotBaseType = "ModelSnapshot";
         private const string BuildModelMethod = "BuildModel";
+        private readonly IAssemblyMapper _assemblyMapper;
 
         private readonly IEntityBuilder _entityBuilder;
-        private readonly IAssemblyMapper _assemblyMapper;
         private readonly ILogger<AssemblyLoader> _logger;
-        private readonly IRelationshipBuilder _relationshipBuilder;
         private readonly IProgramArguments _programArguments;
+        private readonly IRelationshipBuilder _relationshipBuilder;
 
         public AssemblyLoader(
             ILogger<AssemblyLoader> logger,
@@ -47,50 +47,57 @@ namespace Siren.Infrastructure.AssemblyLoad
             var assembly = AssemblyDefinition.ReadAssembly(filePath);
 
             foreach (var module in assembly.Modules)
-            {
-                foreach (var type in module.Types)
+            foreach (var type in module.Types)
+                if (type.BaseType?.Name == ModelSnapshotBaseType)
                 {
-                    if (type.BaseType?.Name == ModelSnapshotBaseType)
+                    _logger.LogInformation("Located snapshot type {TypeName}", type.Name);
+
+                    foreach (var method in type.Methods)
                     {
-                        _logger.LogInformation("Located snapshot type {TypeName}", type.Name);
+                        if (method.Name != BuildModelMethod)
+                            continue;
 
-                        foreach (var method in type.Methods)
-                        {
-                            if (method.Name != BuildModelMethod)
-                                continue;
+                        _logger.LogInformation("Located build model method");
 
-                            _logger.LogInformation("Located build model method");
+                        var entityInstructions = method
+                            .Body
+                            .Instructions
+                            .Where(o => _entityBuilder.IsApplicable(o))
+                            .ToList();
 
-                            var entityInstructions = method
-                                .Body.Instructions.Where(o => _entityBuilder.IsApplicable(o))
-                                .ToList();
-
-                            var entities = entityInstructions
+                        var entities =
+                            entityInstructions
                                 .Select(o => _entityBuilder.Process(o))
                                 .Where(o => o != null)
                                 .ToList();
 
-                            _logger.LogInformation("Extracted {EntitiesCount} entities", entities.Count);
+                        _logger
+                            .LogInformation("Extracted {EntitiesCount} entities", entities.Count);
 
-                            var relationshipInstructions = method
-                                .Body.Instructions.Where(o => _relationshipBuilder.IsApplicable(o))
+                        var relationshipInstructions =
+                            method
+                                .Body
+                                .Instructions
+                                .Where(o => _relationshipBuilder.IsApplicable(o))
                                 .ToList();
 
-                            var relationships = relationshipInstructions
+                        var relationships =
+                            relationshipInstructions
                                 .SelectMany(o => _relationshipBuilder.Process(o, entities)
                                                  // Handle nulls gracefully for relationships among filtered entities
                                                  ?? Enumerable.Empty<ExtractedRelationship>())
                                 .ToList();
 
-                            _logger.LogInformation("Extracted {RelationshipsCount} relationships", relationships.Count);
+                        _logger
+                            .LogInformation("Extracted {RelationshipsCount} relationships", relationships.Count);
 
-                            var result = _assemblyMapper.Map(entities, relationships);
+                        var result =
+                            _assemblyMapper
+                                .Map(entities, relationships);
 
-                            return result;
-                        }
+                        return result;
                     }
                 }
-            }
 
             return null;
         }

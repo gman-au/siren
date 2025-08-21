@@ -33,6 +33,7 @@ namespace Siren.Infrastructure.SchemaSearch
             var entities = allTables
                 .Select(t => new Entity
                 {
+                    Schema = t.TableSchema,
                     ShortName = t.TableName,
                     FullName = t.TableName,
                     Properties = t
@@ -90,11 +91,13 @@ namespace Siren.Infrastructure.SchemaSearch
             foreach (var foreignKey in allForeignKeys)
             {
                 var targetEntity = entities.FirstOrDefault(o =>
+                    o.Schema == foreignKey.ReferencedTableSchema &&
                     o.FullName == foreignKey.ReferencedTableName
                     && o.Properties.Any(p => p.Name == foreignKey.ReferencedColumnName)
                 );
 
                 var sourceEntity = entities.FirstOrDefault(o =>
+                    o.Schema == foreignKey.ForeignKeyTableSchema &&
                     o.FullName == foreignKey.ForeignKeyTableName
                     && o.Properties.Any(p => p.Name == foreignKey.ForeignKeyColumnName)
                 );
