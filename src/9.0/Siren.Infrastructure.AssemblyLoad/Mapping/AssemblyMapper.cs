@@ -26,6 +26,7 @@ namespace Siren.Infrastructure.AssemblyLoad.Mapping
                 {
                     ShortName = o.EntityName?.ToEscaped(),
                     FullName = o.EntityName,
+                    Schema = o.SchemaName,
                     Properties = o.Properties.Select(p => new Property
                     {
                         Name = p.PropertyName?.ToEscaped(),
