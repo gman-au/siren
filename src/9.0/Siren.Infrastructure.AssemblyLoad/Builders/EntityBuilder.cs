@@ -51,24 +51,35 @@ namespace Siren.Infrastructure.AssemblyLoad.Builders
             var result = new ExtractedEntity
             {
                 ReferenceInstruction = instr,
-                Properties = new List<ExtractedProperty>(),
+                Properties = new List<ExtractedProperty>()
             };
 
-            var configuration = _buildConfigurationProvider.Get().First();
+            var configuration =
+                _buildConfigurationProvider
+                    .Get()
+                    .First();
 
             // Extract name
-            var currInstr = instr.StepPrevious(configuration.StepsBackToEntityName);
+            var currInstr =
+                instr
+                    .StepPrevious(configuration.StepsBackToEntityName);
 
             if (currInstr.OpCode == OpCodes.Ldstr)
             {
-                var splitName = currInstr.Operand.ToString().SplitNamespace();
+                var splitName =
+                    currInstr
+                        .Operand
+                        .ToString()
+                        .SplitNamespace();
 
                 result.EntityName = splitName.Item2;
                 result.Namespace = splitName.Item1;
             }
 
             // Get property builder instruction
-            currInstr = instr.StepNext(configuration.StepsForwardToPropertyBuilder);
+            currInstr =
+                instr
+                    .StepNext(configuration.StepsForwardToPropertyBuilder);
 
             if (currInstr.OpCode != OpCodes.Ldftn)
                 return result;
@@ -77,28 +88,41 @@ namespace Siren.Infrastructure.AssemblyLoad.Builders
                 return result;
 
             // Extract properties
-            var propertyInstructions = methodReference
-                .Body.Instructions.Where(o => _propertyBuilder.IsApplicable(o))
-                .ToList();
+            var propertyInstructions =
+                methodReference
+                    .Body
+                    .Instructions
+                    .Where(o => _propertyBuilder.IsApplicable(o))
+                    .ToList();
 
-            var extractedProperties = propertyInstructions
-                .Select(o => _propertyBuilder.Process(o))
-                .Where(o => o != null)
-                .ToList();
+            var extractedProperties =
+                propertyInstructions
+                    .Select(o => _propertyBuilder.Process(o))
+                    .Where(o => o != null)
+                    .ToList();
 
-            var keyInstructions = methodReference.Body.Instructions.Where(o => _keyBuilder.IsApplicable(o));
+            var keyInstructions =
+                methodReference
+                    .Body
+                    .Instructions
+                    .Where(o => _keyBuilder.IsApplicable(o));
 
             foreach (var keyInstruction in keyInstructions)
-            {
-                _keyBuilder.Process(keyInstruction, extractedProperties);
-            }
+                _keyBuilder
+                    .Process(keyInstruction, extractedProperties);
 
             // Extract table information
-            var tableInstr = methodReference.Body.Instructions.FirstOrDefault(o => _tableBuilder.IsApplicable(o));
+            var tableInstr =
+                methodReference
+                    .Body
+                    .Instructions
+                    .FirstOrDefault(o => _tableBuilder.IsApplicable(o));
 
             if (tableInstr != null)
             {
-                var extractedTable = _tableBuilder.Process(tableInstr);
+                var extractedTable =
+                    _tableBuilder
+                        .Process(tableInstr);
 
                 if (extractedTable != null)
                 {
