@@ -1,7 +1,7 @@
 # Siren
 
 <p align="center">
-<img style="border-radius:10px;" alt="siren" width="300" src="https://github.com/user-attachments/assets/24a3436b-9d5a-43dc-bf01-ed4d8b2efc63" />
+<img style="border-radius:10px;" alt="siren" width="300" src="https://github.com/user-attachments/assets/02251849-902d-46d5-bdd1-a2d16e9be111" />
 </p>
 
 [![nuget](https://github.com/gman-au/siren/actions/workflows/nuget.yml/badge.svg)](https://github.com/gman-au/siren/actions/workflows/nuget.yml)
