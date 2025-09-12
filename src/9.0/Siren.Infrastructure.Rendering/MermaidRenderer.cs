@@ -4,16 +4,22 @@ using System.Linq;
 using System.Text;
 using Microsoft.Extensions.Logging;
 using Siren.Domain;
+using Siren.Interfaces;
 
 namespace Siren.Infrastructure.Rendering
 {
     public class MermaidRenderer : IDomainRenderer
     {
+        private readonly IProgramArguments _programArguments;
         private readonly ILogger<MermaidRenderer> _logger;
         private readonly IEnumerable<IRenderTemplate> _renderTemplates;
 
-        public MermaidRenderer(IEnumerable<IRenderTemplate> renderTemplates, ILogger<MermaidRenderer> logger)
+        public MermaidRenderer(
+            IProgramArguments programArguments,
+            IEnumerable<IRenderTemplate> renderTemplates,
+            ILogger<MermaidRenderer> logger)
         {
+            _programArguments = programArguments;
             _renderTemplates = renderTemplates;
             _logger = logger;
         }
@@ -38,7 +44,8 @@ namespace Siren.Infrastructure.Rendering
             // (optional) theme line
             if (!string.IsNullOrEmpty(template.ThemeLine))
             {
-                result.AppendLine($"\t{template.ThemeLine}");
+                var themeLine = _programArguments.CustomLayoutHeader ?? template.ThemeLine;
+                result.AppendLine($"\t{themeLine}");
             }
             _logger.LogInformation("Rendered header");
 

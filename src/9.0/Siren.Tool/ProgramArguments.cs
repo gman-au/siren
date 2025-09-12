@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using CommandLine;
+using Siren.Domain;
 using Siren.Interfaces;
 
 namespace Siren.Tool
@@ -40,6 +41,9 @@ namespace Siren.Tool
         [Option('t', "template", Required = false, HelpText = "Render template (e.g. AzureDevOps). Default is 'default'.", Default = "default")]
         public string RenderTemplate { get; set; }
 
+        [Option('l', "customLayoutHeader", Required = false, HelpText = $"Where a layout header is used, it can be overwritten here. The default value is {Constants.DefaultThemeLine}")]
+        public string CustomLayoutHeader { get; set; }
+
         public IEnumerable<IArgumentError> Initialize(string[] args)
         {
             var parsedArguments = Parser.Default.ParseArguments<ProgramArguments>(args);
@@ -55,6 +59,7 @@ namespace Siren.Tool
                 RenderTemplate = arguments.RenderTemplate;
                 FilterSchemas = arguments.FilterSchemas;
                 SkipSchemas = arguments.SkipSchemas;
+                CustomLayoutHeader = arguments.CustomLayoutHeader;
             }
 
             return parsedArguments.Errors.Select(error =>

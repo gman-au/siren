@@ -1,6 +1,7 @@
-namespace Siren.Interfaces;
-
-public interface IArgumentError
+namespace Siren.Interfaces
 {
-    string Message { get; }
+    public interface IArgumentError
+    {
+        string Message { get; }
+    }
 }
