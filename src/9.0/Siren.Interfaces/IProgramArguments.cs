@@ -13,6 +13,7 @@ namespace Siren.Interfaces
         string RenderTemplate { get; }
         string FilterSchemas { get; }
         string SkipSchemas { get; }
+        string CustomLayoutHeader { get; }
         IEnumerable<IArgumentError> Initialize(string[] args);
     }
 }
