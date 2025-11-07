@@ -19,7 +19,7 @@ namespace Siren.Infrastructure.AssemblyLoad.Extensions
 
         public static string ToEscaped(this string value)
         {
-            value = value.Replace(".", "_").Replace("(", "").Replace(" ", "").Replace(")", "").Replace(",", "_");
+            value = value.Replace(".", "_").Replace("(", "").Replace(" ", "").Replace(")", "").Replace(",", "_").Replace("\"", "");
 
             return value;
         }

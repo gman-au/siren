@@ -17,5 +17,7 @@ namespace Siren.Tests.Domain
         public long ReferenceNumber { get; set; }
 
         public DateTime DatePlaced { get; set; }
+
+        public OrderType OrderType { get; set; }
     }
 }
